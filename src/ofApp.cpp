@@ -66,6 +66,12 @@ void ofApp::keyPressed(int key){
   if(key == 'c') {
     p->addCube();
   }
+  if(key == 'r') {
+    p->addRightTriangle();
+  }
+  if(key == 's') {
+    ofSaveFrame();
+  }
 }
 
 //--------------------------------------------------------------

@@ -28,6 +28,7 @@ class ofApp : public ofBaseApp{
  private:
 		float width, height;
 		//-----------
+		ofxOscReceiver receiver;
 		int oscPort;
 		double mElapsedTime;
 		Perspective* p;

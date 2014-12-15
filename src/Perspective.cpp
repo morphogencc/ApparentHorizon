@@ -77,6 +77,14 @@ void Perspective::addTriangle(int type) {
   mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, 0), mHorizonDistance, type));
 }
 
+void Perspective::addRightTriangle() {
+  mShapes.push_back(new horizonRightTriangle(ofVec3f(0, 0, 0), mHorizonDistance));
+}
+
+void Perspective::addRightTriangle(int type) {
+  mShapes.push_back(new horizonRightTriangle(ofVec3f(0, 0, 0), mHorizonDistance, type));
+}
+
 void Perspective::addCube() {
   mShapes.push_back(new horizonCube(ofVec3f(0, 0, 0), ofVec3f(0.25, 0.25, 0.25), mHorizonDistance));
 }

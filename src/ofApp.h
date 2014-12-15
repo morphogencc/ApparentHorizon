@@ -27,13 +27,6 @@ class ofApp : public ofBaseApp{
 
  private:
 		float width, height;
-		ofxAssimpModelLoader model;
-		ofImage img;
-		ofMesh mesh;
-		ofFbo fbo;
-		ofEasyCam camera;
-		ofLight light;
-		ofxOscReceiver receiver;
 		//-----------
 		int oscPort;
 		double mElapsedTime;

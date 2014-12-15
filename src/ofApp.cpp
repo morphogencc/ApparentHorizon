@@ -2,21 +2,6 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-  /*
-  ofSetFrameRate(60);
-  ofSetVerticalSync(true);
-  ofDisableArbTex();
-  ofEnableDepthTest();
-
-  img.loadImage("test.jpg");
-  model.loadModel("single_screen.obj");
-  fbo.allocate(img.width, img.height);
-  mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
-  8?
-
-  */
-
-  //----------
   mElapsedTime = 0.0;
   mZoom = -2.0;
 

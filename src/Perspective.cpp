@@ -3,6 +3,14 @@
 Perspective::Perspective() {
   mOpenTime = 0;
   mElapsedTime = 0;
+  mGridZ = 10;
+  mGridXY = 1;
+
+  mHorizonDistance = 100.0f;
+  mCameraDirection = ofVec3f(0,0,-2.0);
+  mPosition = ofVec3f(0, 0, -2.0);
+  width = ofGetWidth();
+  height = ofGetHeight();
 }
 
 void Perspective::beginProjection() {   
@@ -12,7 +20,6 @@ void Perspective::beginProjection() {
   glPushMatrix(); 
 
   fNear = 0.5f;  
-  fFar = 1000.0f;  
   fFov = tan(30 * PI / 360);  
   fFov = 0.5;
              
@@ -22,24 +29,33 @@ void Perspective::beginProjection() {
   double _my = (double)ofGetMouseY();
   double _w  = (double)ofGetWidth();
   double _h  = (double)ofGetHeight();
-
-  headX = (_mx / _w) - 0.5;  
-  headY = ((_h - _my) / _h) - 0.5;  
-  headZ = -2.0;
+  
+  mCameraDirection[0] = (_mx / _w) - 0.5;  
+  mCameraDirection[1] = ((_h - _my) / _h) - 0.5;  
+  mCameraDirection[2] = -2.0;
 
   glMatrixMode(GL_PROJECTION);  
   glLoadIdentity();  
           
-  glFrustum(fNear*(-fFov * ratio + headX),  
-	    fNear*(fFov * ratio + headX),  
-	    fNear*(-fFov + headY),  
-	    fNear*(fFov + headY),  
-	    fNear, fFar);  
+  glFrustum(fNear*(-fFov * ratio + mCameraDirection[0]),  
+	    fNear*(fFov * ratio + mCameraDirection[0]),  
+	    fNear*(-fFov + mCameraDirection[1]),  
+	    fNear*(fFov + mCameraDirection[1]),  
+	    fNear, mHorizonDistance);  
           
   glMatrixMode(GL_MODELVIEW);  
   glLoadIdentity();  
-  gluLookAt(headX*headZ, headY*headZ, 0, headX*headZ, headY*headZ, -1, 0, 1, 0);
-  glTranslatef(0.0,0.0,headZ);
+  gluLookAt(mCameraDirection[0]*mCameraDirection[2], 
+	    mCameraDirection[1]*mCameraDirection[2], 
+	    0, 
+	    mCameraDirection[0]*mCameraDirection[2], 
+	    mCameraDirection[1]*mCameraDirection[2], 
+	    -1, 
+	    0, 
+	    1, 
+	    0);
+
+  glTranslatef(mPosition[0], mPosition[1], mPosition[2]);
 }  
 
 void Perspective::endProjection() {  
@@ -49,20 +65,30 @@ void Perspective::endProjection() {
   glPopMatrix(); 
 }
 
-void Perspective::addShape() {
-  mShapes.push_back(new Shape(ofVec3f(0, 0, 0)));
-  ofLog() << "New shape added!" << std::endl;
+void Perspective::addRect() {
+  mShapes.push_back(new horizonRect(ofVec3f(0, 0, 0), mHorizonDistance));
+}
+
+void Perspective::addTriangle() {
+  mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, 0), mHorizonDistance));
+}
+
+void Perspective::addTriangle(int type) {
+  mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, 0), mHorizonDistance, type));
+}
+
+void Perspective::addCube() {
+  mShapes.push_back(new horizonCube(ofVec3f(0, 0, 0), ofVec3f(0.25, 0.25, 0.25), mHorizonDistance));
 }
 
 void Perspective::update(double time) {
   for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ) {
-    if((*it)->getElapsedTime() > 1.0) {
+    if((*it)->getPosition()[2] > mHorizonDistance) {
       it = mShapes.erase(it);
-      ofLog() << "Shape deleted!";
     }
     else {
       (*it)->update(time);
-      ofLog() << "Shape->update()";
+      //(*it)->setRotation(ofMap((*it)->getElapsedTime(), 0, 1, 0, 180));
       ++it;
     }
   }
@@ -71,35 +97,37 @@ void Perspective::update(double time) {
 void Perspective::draw() {
   for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->draw();
-    ofLog() << "Shape->draw()";
   }
 }
 
 void Perspective::drawGrid() {  
-  int nbOfSteps = 50;  
+  float stepSize = mHorizonDistance / (mGridZ);
   float frameW = 1.0;  
   float frameH = 1.0;
 
   ofPushStyle();  
-  for (int i = 0; i < nbOfSteps; i++) {  
+  for (int i = 0; i < mGridZ; i++) {  
     ofSetLineWidth(1);
     ofSetColor(255,255,255,80);  
     ofPushMatrix();  
-    ofTranslate(.0f, .0f, i * -0.2f);  
+    ofTranslate(.0f, .0f, -(i*stepSize));  
     ofLine(-frameW, -frameH,  frameW, -frameH);  
     ofLine( frameW, -frameH,  frameW,  frameH);  
     ofLine( frameW,  frameH, -frameW,  frameH);  
     ofLine(-frameW,  frameH, -frameW, -frameH);
     ofPopMatrix();
-    for (int i = 0; i < nbOfSteps*2; i++) {
-      double _x = frameW/(double)nbOfSteps*(double)i-1.0;
-      double _y = frameH/(double)nbOfSteps*(double)i-1.0;
-      ofLine(-_x, -frameH, 0.0, -_x, -frameH, -10.0);
-      ofLine( _x,  frameH, 0.0,  _x,  frameH, -10.0);
-      ofLine( frameW, -_y, 0.0,  frameW, -_y, -10.0);
-      ofLine(-frameW,  _y, 0.0, -frameW,  _y, -10.0);
-    }
+  }
+  for (int i = 0; i < mGridXY; i++) {
+    double _x = i*frameW/(double)mGridXY - 1.0;
+    double _y = i*frameH/(double)mGridXY - 1.0;
+    ofLine(-_x, -frameH, 0.0, -_x, -frameH, -mHorizonDistance);
+    ofLine( _x,  frameH, 0.0,  _x,  frameH, -mHorizonDistance);
+    ofLine( frameW, -_y, 0.0,  frameW, -_y, -mHorizonDistance);
+    ofLine(-frameW,  _y, 0.0, -frameW,  _y, -mHorizonDistance);
   }
   ofPopStyle();
 }
-  
+
+void Perspective::translateCamera(float newZ) {
+  mPosition[2] = newZ;
+}

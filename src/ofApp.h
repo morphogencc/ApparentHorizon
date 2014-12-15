@@ -7,6 +7,7 @@
 #include "atlasSyphonClient.h"
 #include "Perspective.h"
 #include "ofxOsc.h"
+#include "ofxUI.h"
 
 class ofApp : public ofBaseApp{
 
@@ -36,9 +37,8 @@ class ofApp : public ofBaseApp{
 		//-----------
 		int oscPort;
 		double mElapsedTime;
-		ofVec3f objPos[10];
-		ofColor colors[10][4];
 		Perspective* p;
+		float mZoom;
 };
 
 #endif

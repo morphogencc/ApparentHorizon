@@ -2,6 +2,7 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+  /*
   ofSetFrameRate(60);
   ofSetVerticalSync(true);
   ofDisableArbTex();
@@ -11,44 +12,52 @@ void ofApp::setup(){
   model.loadModel("single_screen.obj");
   fbo.allocate(img.width, img.height);
   mesh.setMode(OF_PRIMITIVE_TRIANGLE_STRIP);
+  8?
+
+  */
 
   //----------
   mElapsedTime = 0.0;
-  
+  mZoom = -2.0;
+
   oscPort = 7000;
   ofLog() << "Listening for OSC messages on port " << oscPort << "\n";
   receiver.setup(oscPort);
-
-  for(int i = 0; i < 10; i++) {
-    double _x = ofRandomf();
-    double _y = ofRandomf();
-    double _z = ofRandomf()-1.0;
-    
-    objPos[i] = ofVec3f(_x,_y,_z);
-    
-    for(int j = 0; j < 4; j++) {
-      ofColor _color;
-      _color.set((unsigned char)255.0*ofRandomf(), (unsigned char)255.0*ofRandomf(), (unsigned char)255.0*ofRandomf(), (unsigned char)255.0*0.4);
-      colors[i][j] = _color;
-    }
-  }
 
   p = new Perspective();
 }
 
 //--------------------------------------------------------------
-void ofApp::update(){
+void ofApp::update() {
   mElapsedTime = ofGetElapsedTimef();
   p->update(mElapsedTime);
   while(receiver.hasWaitingMessages()) {
     ofxOscMessage m;
     receiver.getNextMessage(&m);
     ofLog() << "Message: " << m.getAddress();
-    //vector<std::string> address = ofSplitString(m.getAddress(), "/");
-    //ofLog() << "Command: " << address.at(0);
-    //ofLog() << "Value: " << address.at(1);
-    if(m.getAddress() == "/create/shape") {
-      p->addShape();
+    if(m.getNumArgs() > 0) {
+      ofLog() << "Value: " << m.getArgAsString(0);
+    }
+    if(m.getAddress() == "/create/rect") {
+      p->addRect();
+    }    
+    else if(m.getAddress() == "/create/triangle") {
+      if(m.getNumArgs() > 0) {
+	//TODO -- osc to float
+	p->addTriangle();
+      }
+      else {
+	p->addTriangle();
+      }
+    }
+    
+    else if(m.getAddress() == "/create/cube") {
+      p->addCube();
+    }
+    
+    else if(m.getAddress() == "/camera/position") {
+      //TODO: string to float
+      //p->translateCamera(atof(m.getArgAsString(0)));
     }
   }
 }
@@ -67,7 +76,10 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
   if(key == ' ') {
-    p->addShape();
+    p->addTriangle();
+  }
+  if(key == 'c') {
+    p->addCube();
   }
 }
 

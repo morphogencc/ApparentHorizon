@@ -1,5 +1,11 @@
+#pragma once
+
 #include "ofMain.h"
 #include "Shape.h"
+#include "horizonRect.h"
+#include "horizonTriangle.h"
+#include "horizonCube.h"
+#include "pingPong.h"
 #include <deque>
 
 class Perspective {
@@ -8,16 +14,23 @@ class Perspective {
   ~Perspective();
   void beginProjection();
   void endProjection();
-  void addShape();
+  void addRect();
+  void addTriangle();
+  void addTriangle(int type);
+  void addCube();
   void update(double time);
   void draw();
   void drawGrid();
+  void translateCamera(float newZ);
  private:
+  float width, height;
+  int mGridZ;
+  int mGridXY;
+  float mHorizonDistance;
   double mOpenTime;
   double mElapsedTime;
-  double headX, headY, headZ;  
   double fNear, fFar, fFov;  
-  ofVec3f objPos[10];
-  ofColor colors[10][4];
-  deque<Shape*> mShapes;
+  ofVec3f mPosition;
+  ofVec3f mCameraDirection;
+   deque<Shape*> mShapes;
 };

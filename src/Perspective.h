@@ -25,6 +25,8 @@ class Perspective {
   void draw();
   void drawGrid();
   void translateCamera(float newZ);
+  void setCameraDirectionX(float direction_x);
+  void setCameraDirectionY(float direction_y);  
  private:
   float width, height;
   int mGridZ;

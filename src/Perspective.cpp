@@ -24,15 +24,6 @@ void Perspective::beginProjection() {
   fFov = 0.5;
              
   float ratio = ofGetWidth() / ofGetHeight();  
-    
-  double _mx = (double)ofGetMouseX();
-  double _my = (double)ofGetMouseY();
-  double _w  = (double)ofGetWidth();
-  double _h  = (double)ofGetHeight();
-  
-  mCameraDirection[0] = (_mx / _w) - 0.5;  
-  mCameraDirection[1] = ((_h - _my) / _h) - 0.5;  
-  mCameraDirection[2] = -2.0;
 
   glMatrixMode(GL_PROJECTION);  
   glLoadIdentity();  
@@ -138,4 +129,12 @@ void Perspective::drawGrid() {
 
 void Perspective::translateCamera(float newZ) {
   mPosition[2] = newZ;
+}
+
+void Perspective::setCameraDirectionX(float direction_x) {
+  mCameraDirection[0] = direction_x;
+ }
+
+void Perspective::setCameraDirectionY(float direction_y) {
+  mCameraDirection[1] = direction_y;
 }

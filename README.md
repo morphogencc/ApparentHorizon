@@ -1,5 +1,7 @@
 # Apparent Horizon
 
+
+## OSC Format
 Listens for OSC messages on localhost (127.0.0.1), port 7000.
 
 Current messages are:
@@ -15,6 +17,11 @@ Messages to be implemented are:
 - `/color/saturation` -- set the current saturation of created shapes
 - `/camera/heading/x/` -- set the camera's x heading
 - `/camera/heading/y/` -- set the camera's y heading
+
+The preferred OSC source is [Duration](http://duration.cc/); all fo the messages and values are configured to be
+compatible with it.
+
+Thus, all float messages require inputs from 0 - 1.
 
 # TO DO
 - Add cubes to projectable objects

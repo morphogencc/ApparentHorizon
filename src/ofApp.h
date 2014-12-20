@@ -4,7 +4,6 @@
 #include "ofMain.h"
 #include "ofxAssimpModelLoader.h"
 #include "ofVboMesh.h"
-#include "atlasSyphonClient.h"
 #include "Perspective.h"
 #include "ofxOsc.h"
 #include "ofxUI.h"

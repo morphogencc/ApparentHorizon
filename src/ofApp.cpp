@@ -72,15 +72,15 @@ void ofApp::update() {
       }
     }
     else if(m.getAddress() == "/camera/heading") {
-      if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
-	if(m.getArgAsInt32(0) == 1) {
+      if(m.getArgType(1) == OFXOSC_TYPE_INT32) { 
+	if(m.getArgAsInt32(1) == 1) {
 	  //change x heading
-	  int heading = m.getArgAsInt32(1);
+	  int heading = m.getArgAsInt32(0);
 	  p->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
 	}
 	if(m.getArgAsInt32(0) == 2) {
 	  //change y heading
-	  int heading = m.getArgAsInt32(1);
+	  int heading = m.getArgAsInt32(0);
 	  p->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
 	}
       }

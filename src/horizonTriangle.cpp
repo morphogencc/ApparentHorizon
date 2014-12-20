@@ -16,7 +16,7 @@ void horizonTriangle::draw() {
   ofPushMatrix();
   ofPushStyle();
   ofRotateZ(mRotation);
-  ofNoFill();
+  ofFill();
   ofSetColor(mColor);
   ofSetLineWidth(ofMap(mPosition[2], 0, -mHorizon, 3.0, 0.0));
   ofTranslate(mPosition[0], mPosition[1], mPosition[2]);  

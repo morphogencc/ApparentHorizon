@@ -7,21 +7,24 @@ Perspective::Perspective() {
   mGridXY = 1;
 
   mHorizonDistance = 100.0f;
-  mCameraDirection = ofVec3f(0,0,-2.0);
+  mCameraDirection = ofVec3f(0, 0, -2.0);
   mPosition = ofVec3f(0, 0, -2.0);
   width = ofGetWidth();
   height = ofGetHeight();
 }
 
 void Perspective::beginProjection() {   
+  mFbo.begin();
   glMatrixMode(GL_PROJECTION);  
   glPushMatrix();  
+
   glMatrixMode(GL_MODELVIEW);  
   glPushMatrix(); 
 
   fNear = 0.5f;  
-  fFov = tan(30 * PI / 360);  
   fFov = 0.5;
+  //fFov = tan(30 * PI / 360);  
+  //fFov = tan(90 * PI / 360.0 );
              
   float ratio = ofGetWidth() / ofGetHeight();  
 
@@ -36,6 +39,7 @@ void Perspective::beginProjection() {
           
   glMatrixMode(GL_MODELVIEW);  
   glLoadIdentity();  
+
   gluLookAt(mCameraDirection[0]*mCameraDirection[2], 
 	    mCameraDirection[1]*mCameraDirection[2], 
 	    0, 
@@ -58,6 +62,12 @@ void Perspective::endProjection() {
 
 void Perspective::addRect() {
   mShapes.push_back(new horizonRect(ofVec3f(0, 0, 0), mHorizonDistance));
+}
+
+void Perspective::addRect(int type, int hue) {
+  horizonRect* r = new horizonRect(ofVec3f(0, 0, 0), mHorizonDistance, type);
+  r->setHue(ofMap(hue, 0, 127, 64, 255));
+  mShapes.push_back(r);
 }
 
 void Perspective::addTriangle() {
@@ -91,9 +101,14 @@ void Perspective::update(double time) {
       ++it;
     }
   }
+  mFbo.end();
 }
 
-void Perspective::draw() {
+void Perspective::draw(float x, float y) {
+  mFbo.draw(x, y);
+}
+
+void Perspective::drawShapes() {
   for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->draw();
   }

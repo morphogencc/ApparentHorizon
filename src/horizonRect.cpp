@@ -4,6 +4,49 @@ horizonRect::horizonRect(ofVec3f position, float horizon) : Shape(position, hori
 
 }
 
+horizonRect::horizonRect(ofVec3f position, float horizon, int type) : Shape(position, horizon) {
+  mWidth = 0.33;
+  mHeight = 0.33;
+  switch(type) {
+  case 0:
+    mPosition[0] = -0.67;
+    mPosition[1] = 0.67;
+    break;
+  case 1:
+    mPosition[0] = 0.0;
+    mPosition[1] = 0.67;
+    break;
+  case 2:
+    mPosition[0] = 0.67;
+    mPosition[1] = 0.67;
+    break;
+  case 3:
+    mPosition[0] = -0.67;
+    mPosition[1] = 0;
+    break;
+  case 4:
+    mPosition[0] = 0;
+    mPosition[1] = 0;
+    break;
+  case 5:
+    mPosition[0] = 0.67;
+    mPosition[1] = 0;
+    break;
+  case 6:
+    mPosition[0] = -0.67;
+    mPosition[1] = -0.67;
+    break;
+  case 7:
+    mPosition[0] = 0;
+    mPosition[1] = -0.67;
+    break;
+  case 8:
+    mPosition[0] = 0.67;
+    mPosition[1] = -0.67;
+    break;
+  }
+}
+
 horizonRect::~horizonRect() {
   
 }

@@ -3,12 +3,15 @@
 Shape::Shape(ofVec3f position, float horizon) {
   mOpenTime = ofGetElapsedTimef();
   mColor.setHsb(128, 255, 255, 255);
+  mInitialColor.setHsb(128, 255, 255, 255);
   mRotation = 0;
   mPosition = position;
+  mInitialPositionZ = mPosition[2];
   mHorizon = horizon;
   mDepth = 1.0;
   mWidth = 1.0;
   mHeight = 1.0;
+  mTimeToHorizon = 10.0;
 }
 
 Shape::~Shape() {
@@ -16,16 +19,17 @@ Shape::~Shape() {
 
 void Shape::update(double time) {
   mElapsedTime = ofGetElapsedTimef() - mOpenTime;
-  mPosition[2] = ofMap(mElapsedTime, 0.0, 5.0, 0.0, -mHorizon);
+  mPosition[2] = ofMap(mElapsedTime, 0.0, mTimeToHorizon, mInitialPositionZ, -mHorizon);
+  mColor.setBrightness(ofMap(mPosition[2], mInitialPositionZ, -mHorizon, mInitialColor[2], 10.0));
 }
 
 void Shape::draw() {
   ofPushMatrix();
   ofPushStyle();
   ofRotateZ(mRotation);
-  ofNoFill();
+  ofFill();
   ofColor(mColor);
-  ofSetLineWidth(ofMap(mPosition[2], 0, -mHorizon, 3.0, 0.0));
+  ofSetLineWidth(ofMap(mPosition[2], -mInitialPositionZ, -mHorizon, 3.0, 0.0));
   ofTranslate(mPosition[0], mPosition[1], mPosition[2]);  
   ofLine(-mWidth, -mHeight,  mWidth, -mHeight);  
   ofLine( mWidth, -mHeight,  mWidth,  mHeight);  

@@ -27,12 +27,15 @@ class ofApp : public ofBaseApp{
 
  private:
 		float width, height;
+		ofMesh mMesh;
 		//-----------
 		ofxOscReceiver receiver;
 		int oscPort;
 		double mElapsedTime;
 		Perspective* p;
 		float mZoom;
+		bool mDebug;
+		const float mMaxDistance = -20;
 };
 
 #endif

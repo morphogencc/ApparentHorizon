@@ -16,19 +16,22 @@ class Perspective {
   void beginProjection();
   void endProjection();
   void addRect();
+  void addRect(int type, int hue);
   void addTriangle();
   void addTriangle(int type);
   void addRightTriangle();
   void addRightTriangle(int type);
   void addCube();
   void update(double time);
-  void draw();
+  void draw(float x, float y);
+  void drawShapes();
   void drawGrid();
   void translateCamera(float newZ);
   void setCameraDirectionX(float direction_x);
   void setCameraDirectionY(float direction_y);  
  private:
   float width, height;
+  ofFbo mFbo;
   int mGridZ;
   int mGridXY;
   float mHorizonDistance;

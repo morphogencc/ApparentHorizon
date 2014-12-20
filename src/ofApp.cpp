@@ -4,6 +4,7 @@
 void ofApp::setup(){
   mElapsedTime = 0.0;
   mZoom = -2.0;
+  mMaxDistance = -20.0;
 
   oscPort = 7000;
   ofLog() << "Listening for OSC messages on port " << oscPort << "\n";

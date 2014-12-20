@@ -34,7 +34,6 @@ class ofApp : public ofBaseApp{
 		Perspective* p;
 		float mZoom;
 		bool mDebug;
-		const float mMaxDistance = -20;
 };
 
 #endif

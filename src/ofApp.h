@@ -27,6 +27,7 @@ class ofApp : public ofBaseApp{
  private:
 		float width, height;
 		ofMesh mMesh;
+		float mMaxDistance;
 		//-----------
 		ofxOscReceiver receiver;
 		int oscPort;

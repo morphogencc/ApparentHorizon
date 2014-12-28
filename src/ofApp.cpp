@@ -93,11 +93,7 @@ void ofApp::update() {
 void ofApp::draw(){
   ofBackground(0);
   ofEnableAlphaBlending();
-  p->beginProjection();
-  p->drawGrid();
-  p->drawShapes();
-  p->draw(0,0);
-  p->endProjection();
+  p->draw();
   ofDisableAlphaBlending();
 }
 

@@ -13,7 +13,7 @@ class Perspective {
  public:
   Perspective();
   ~Perspective();
-  void beginProjection();
+  void beginProjection(float rotationAngle);
   void endProjection();
   void addRect();
   void addRect(int type, int hue);
@@ -23,7 +23,7 @@ class Perspective {
   void addRightTriangle(int type);
   void addCube();
   void update(double time);
-  void draw(float x, float y);
+  void draw();
   void drawShapes();
   void drawGrid();
   void translateCamera(float newZ);
@@ -31,7 +31,8 @@ class Perspective {
   void setCameraDirectionY(float direction_y);  
  private:
   float width, height;
-  ofFbo mFbo;
+  ofFbo mLeftFbo;
+  ofFbo mRightFbo;
   int mGridZ;
   int mGridXY;
   float mHorizonDistance;

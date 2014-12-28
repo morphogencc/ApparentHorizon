@@ -7,14 +7,15 @@ Perspective::Perspective() {
   mGridXY = 1;
 
   mHorizonDistance = 100.0f;
-  mCameraDirection = ofVec3f(0, 0, -2.0);
-  mPosition = ofVec3f(0, 0, -2.0);
+  mCameraDirection = ofVec3f(0, 0, -1.0);
+  mPosition = ofVec3f(0, 0, -1.0);
   width = ofGetWidth();
   height = ofGetHeight();
+  mLeftFbo.allocate(width / 2.0, height);
+  mRightFbo.allocate(width / 2.0, height);
 }
 
-void Perspective::beginProjection() {   
-  mFbo.begin();
+void Perspective::beginProjection(float rotationAngle) {   
   glMatrixMode(GL_PROJECTION);  
   glPushMatrix();  
 
@@ -51,6 +52,8 @@ void Perspective::beginProjection() {
 	    0);
 
   glTranslatef(mPosition[0], mPosition[1], mPosition[2]);
+
+  glRotatef(rotationAngle, 0, 1, 0);
 }  
 
 void Perspective::endProjection() {  
@@ -101,11 +104,27 @@ void Perspective::update(double time) {
       ++it;
     }
   }
-  mFbo.end();
 }
 
-void Perspective::draw(float x, float y) {
-  mFbo.draw(x, y);
+void Perspective::draw() {
+  mLeftFbo.begin();
+  ofBackground(0);
+  beginProjection(0);
+  drawGrid();
+  drawShapes();
+  endProjection();
+  mLeftFbo.end();
+
+  mRightFbo.begin();
+  ofBackground(0);
+  beginProjection(90);
+  drawGrid();
+  drawShapes();
+  endProjection();
+  mRightFbo.end();
+
+  mLeftFbo.draw(0, 0, width/2, height);
+  mRightFbo.draw(width/2, 0, width/2, height);
 }
 
 void Perspective::drawShapes() {

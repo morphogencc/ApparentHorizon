@@ -2,6 +2,7 @@
 
 Shape::Shape(ofVec3f position, float horizon) {
   mOpenTime = ofGetElapsedTimef();
+  mElapsedTime = 0.0;
   mColor.setHsb(128, 255, 255, 255);
   mInitialColor.setHsb(128, 255, 255, 255);
   mRotation = 0;
@@ -12,15 +13,17 @@ Shape::Shape(ofVec3f position, float horizon) {
   mWidth = 1.0;
   mHeight = 1.0;
   mTimeToHorizon = 10.0;
+  mSpeed = -0.25;
 }
 
 Shape::~Shape() {
 }
 
-void Shape::update(double time) {
+void Shape::update(double time, float cameraPosition) {
+  mDistanceFromCamera = abs(cameraPosition + mPosition[2]);
   mElapsedTime = ofGetElapsedTimef() - mOpenTime;
-  mPosition[2] = ofMap(mElapsedTime, 0.0, mTimeToHorizon, mInitialPositionZ, -mHorizon);
-  mColor.setBrightness(ofMap(mPosition[2], mInitialPositionZ, -mHorizon, mInitialColor[2], 10.0));
+  mPosition[2] += mSpeed;
+  mColor.setBrightness(ofMap(mDistanceFromCamera, 0.0, mHorizon, mInitialColor[2], 10.0));
 }
 
 void Shape::draw() {
@@ -29,14 +32,21 @@ void Shape::draw() {
   ofRotateZ(mRotation);
   ofFill();
   ofColor(mColor);
-  ofSetLineWidth(ofMap(mPosition[2], -mInitialPositionZ, -mHorizon, 3.0, 0.0));
-  ofTranslate(mPosition[0], mPosition[1], mPosition[2]);  
+  ofSetLineWidth(ofMap(mDistanceFromCamera, 0.0, mHorizon, 3.0, 0.0));
+  ofTranslate(mPosition[0], mPosition[1], mPosition[2]);
   ofLine(-mWidth, -mHeight,  mWidth, -mHeight);  
   ofLine( mWidth, -mHeight,  mWidth,  mHeight);  
   ofLine( mWidth,  mHeight, -mWidth,  mHeight);  
   ofLine(-mWidth,  mHeight, -mWidth, -mHeight);
   ofPopStyle();
   ofPopMatrix();
+}
+
+bool Shape::isAlive() {
+  if(mElapsedTime > mTimeToHorizon) {
+    return true;
+  }
+  return false;
 }
 
 double Shape::getElapsedTime() {

@@ -24,9 +24,11 @@ class Perspective {
   void addCube();
   void update(double time);
   void draw();
+  void reset();
   void drawShapes();
   void drawGrid();
   void translateCamera(float newZ);
+  void setCameraSpeed(float velocity);
   void setCameraDirectionX(float direction_x);
   void setCameraDirectionY(float direction_y);  
  private:
@@ -40,6 +42,7 @@ class Perspective {
   double mElapsedTime;
   double fNear, fFar, fFov;  
   ofVec3f mPosition;
+  float mZoomSpeed;
   ofVec3f mCameraDirection;
    deque<Shape*> mShapes;
 };

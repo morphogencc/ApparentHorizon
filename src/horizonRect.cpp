@@ -9,38 +9,42 @@ horizonRect::horizonRect(ofVec3f position, float horizon, int type) : Shape(posi
   mHeight = 0.33;
   switch(type) {
   case 0:
-    mPosition[0] = -0.67;
-    mPosition[1] = 0.67;
+    mWidth = 1.0;
+    mHeight = 1.0;
     break;
   case 1:
-    mPosition[0] = 0.0;
+    mPosition[0] = -0.67;
     mPosition[1] = 0.67;
     break;
   case 2:
-    mPosition[0] = 0.67;
+    mPosition[0] = 0.0;
     mPosition[1] = 0.67;
     break;
   case 3:
-    mPosition[0] = -0.67;
-    mPosition[1] = 0;
+    mPosition[0] = 0.67;
+    mPosition[1] = 0.67;
     break;
   case 4:
-    mPosition[0] = 0;
+    mPosition[0] = -0.67;
     mPosition[1] = 0;
     break;
   case 5:
-    mPosition[0] = 0.67;
+    mPosition[0] = 0;
     mPosition[1] = 0;
     break;
   case 6:
+    mPosition[0] = 0.67;
+    mPosition[1] = 0;
+    break;
+  case 7:
     mPosition[0] = -0.67;
     mPosition[1] = -0.67;
     break;
-  case 7:
+  case 8:
     mPosition[0] = 0;
     mPosition[1] = -0.67;
     break;
-  case 8:
+  case 9:
     mPosition[0] = 0.67;
     mPosition[1] = -0.67;
     break;
@@ -57,7 +61,7 @@ void horizonRect::draw() {
   ofRotateZ(mRotation);
   ofNoFill();
   ofSetColor(mColor);
-  ofSetLineWidth(ofMap(mPosition[2], 0, -mHorizon, 3.0, 0.0));
+  ofSetLineWidth(ofMap(mDistanceFromCamera, 0.0, mHorizon, 3.0, 0.0));
   ofTranslate(mPosition[0], mPosition[1], mPosition[2]);  
   ofLine(-mWidth, -mHeight,  mWidth, -mHeight);  
   ofLine( mWidth, -mHeight,  mWidth,  mHeight);  

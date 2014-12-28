@@ -9,6 +9,7 @@ Perspective::Perspective() {
   mHorizonDistance = 100.0f;
   mCameraDirection = ofVec3f(0, 0, -1.0);
   mPosition = ofVec3f(0, 0, -1.0);
+  mZoomSpeed = 0.0;
   width = ofGetWidth();
   height = ofGetHeight();
   mLeftFbo.allocate(width / 2.0, height);
@@ -27,7 +28,7 @@ void Perspective::beginProjection(float rotationAngle) {
   //fFov = tan(30 * PI / 360);  
   //fFov = tan(90 * PI / 360.0 );
              
-  float ratio = ofGetWidth() / ofGetHeight();  
+  float ratio = 0.5 * ofGetWidth() / ofGetHeight();  
 
   glMatrixMode(GL_PROJECTION);  
   glLoadIdentity();  
@@ -64,46 +65,47 @@ void Perspective::endProjection() {
 }
 
 void Perspective::addRect() {
-  mShapes.push_back(new horizonRect(ofVec3f(0, 0, 0), mHorizonDistance));
+  mShapes.push_back(new horizonRect(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
 }
 
 void Perspective::addRect(int type, int hue) {
-  horizonRect* r = new horizonRect(ofVec3f(0, 0, 0), mHorizonDistance, type);
+  horizonRect* r = new horizonRect(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type);
   r->setHue(ofMap(hue, 0, 127, 64, 255));
   mShapes.push_back(r);
 }
 
 void Perspective::addTriangle() {
-  mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, 0), mHorizonDistance));
+  mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
 }
 
 void Perspective::addTriangle(int type) {
-  mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, 0), mHorizonDistance, type));
+  mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
 }
 
 void Perspective::addRightTriangle() {
-  mShapes.push_back(new horizonRightTriangle(ofVec3f(0, 0, 0), mHorizonDistance));
+  mShapes.push_back(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
 }
 
 void Perspective::addRightTriangle(int type) {
-  mShapes.push_back(new horizonRightTriangle(ofVec3f(0, 0, 0), mHorizonDistance, type));
+  mShapes.push_back(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
 }
 
 void Perspective::addCube() {
-  mShapes.push_back(new horizonCube(ofVec3f(0, 0, 0), ofVec3f(0.25, 0.25, 0.25), mHorizonDistance));
+  mShapes.push_back(new horizonCube(ofVec3f(0, 0, -mPosition[2]), ofVec3f(0.25, 0.25, 0.25), mHorizonDistance));
 }
 
 void Perspective::update(double time) {
   for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ) {
-    if((*it)->getPosition()[2] > mHorizonDistance) {
+    if((*it)->isAlive()) {
       it = mShapes.erase(it);
     }
     else {
-      (*it)->update(time);
+      (*it)->update(time, mPosition[2]);
       //(*it)->setRotation(ofMap((*it)->getElapsedTime(), 0, 1, 0, 180));
       ++it;
     }
   }
+  mPosition[2] += mZoomSpeed;
 }
 
 void Perspective::draw() {
@@ -127,6 +129,17 @@ void Perspective::draw() {
   mRightFbo.draw(width/2, 0, width/2, height);
 }
 
+void Perspective::reset() {
+  mOpenTime = 0;
+  mElapsedTime = 0;
+  mGridZ = 10;
+  mGridXY = 1;
+
+  mHorizonDistance = 100.0f;
+  mCameraDirection = ofVec3f(0, 0, -1.0);
+  mPosition = ofVec3f(0, 0, -1.0);
+}
+
 void Perspective::drawShapes() {
   for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->draw();
@@ -135,15 +148,17 @@ void Perspective::drawShapes() {
 
 void Perspective::drawGrid() {  
   float stepSize = mHorizonDistance / (mGridZ);
-  float frameW = 1.0;  
+  float frameW = 1.0;
   float frameH = 1.0;
 
+  float cameraOffset = mPosition[2] - fmodf(mPosition[2],mGridZ) - mGridZ;
+  
   ofPushStyle();  
   for (int i = 0; i < mGridZ; i++) {  
     ofSetLineWidth(1);
     ofSetColor(255,255,255,80);  
     ofPushMatrix();  
-    ofTranslate(.0f, .0f, -(i*stepSize));  
+    ofTranslate(.0f, .0f, -(i*stepSize) - cameraOffset);
     ofLine(-frameW, -frameH,  frameW, -frameH);  
     ofLine( frameW, -frameH,  frameW,  frameH);  
     ofLine( frameW,  frameH, -frameW,  frameH);  
@@ -153,16 +168,20 @@ void Perspective::drawGrid() {
   for (int i = 0; i < mGridXY; i++) {
     double _x = i*frameW/(double)mGridXY - 1.0;
     double _y = i*frameH/(double)mGridXY - 1.0;
-    ofLine(-_x, -frameH, 0.0, -_x, -frameH, -mHorizonDistance);
-    ofLine( _x,  frameH, 0.0,  _x,  frameH, -mHorizonDistance);
-    ofLine( frameW, -_y, 0.0,  frameW, -_y, -mHorizonDistance);
-    ofLine(-frameW,  _y, 0.0, -frameW,  _y, -mHorizonDistance);
+    ofLine(-_x, -frameH, -cameraOffset, -_x, -frameH, -mHorizonDistance - cameraOffset);
+    ofLine( _x,  frameH, -cameraOffset,  _x,  frameH, -mHorizonDistance - cameraOffset);
+    ofLine( frameW, -_y, -cameraOffset,  frameW, -_y, -mHorizonDistance - cameraOffset);
+    ofLine(-frameW,  _y,  -cameraOffset, -frameW,  _y, -mHorizonDistance - cameraOffset);
   }
   ofPopStyle();
 }
 
 void Perspective::translateCamera(float newZ) {
   mPosition[2] = newZ;
+}
+
+void Perspective::setCameraSpeed(float velocity) {
+  mZoomSpeed = velocity;
 }
 
 void Perspective::setCameraDirectionX(float direction_x) {

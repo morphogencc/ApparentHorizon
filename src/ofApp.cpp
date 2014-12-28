@@ -35,7 +35,20 @@ void ofApp::update() {
       }
     }
     if(m.getAddress() == "/create/rect") {
-      p->addRect();
+      if(m.getNumArgs() == 0) {
+	p->addRect();
+      }
+      else {  
+	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
+	  pitch = m.getArgAsInt32(0);
+	  ofLog() << "Pitch: " << ofToString(pitch);
+	}
+	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
+	  velocity = m.getArgAsInt32(1);
+	  ofLog() << "Velocity: " << ofToString(velocity);
+	}
+	p->addRect(pitch, velocity);
+      }
     }    
     else if(m.getAddress() == "/create/triangle") {
       if(m.getNumArgs() == 0) {
@@ -66,10 +79,13 @@ void ofApp::update() {
     else if(m.getAddress() == "/create/cube") {
       p->addCube();
     }    
-    else if(m.getAddress() == "/camera/position") {
-      if(m.getArgType(0) == OFXOSC_TYPE_FLOAT) { 
-	float distance = ofMap(m.getArgAsFloat(0), 0, 1, -2.0, -mMaxDistance);
-	p->translateCamera(distance);
+    else if(m.getAddress() == "/camera/speed") {
+      if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
+	float speed = ofMap(m.getArgAsInt32(0), 0, 127, -1.0, 1.0);
+	if(m.getArgAsInt32(0) >= 63 && m.getArgAsInt32(0) <= 65) {
+	  speed = 0;
+	}
+	p->setCameraSpeed(speed);
       }
     }
     else if(m.getAddress() == "/camera/heading") {
@@ -79,7 +95,7 @@ void ofApp::update() {
 	  int heading = m.getArgAsInt32(0);
 	  p->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
 	}
-	if(m.getArgAsInt32(0) == 2) {
+	if(m.getArgAsInt32(1) == 2) {
 	  //change y heading
 	  int heading = m.getArgAsInt32(0);
 	  p->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
@@ -100,7 +116,7 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
   if(key == ' ') {
-    p->addRect();
+    p->reset();
   }
   if(key == 't') {
     p->addTriangle();
@@ -137,8 +153,8 @@ void ofApp::mouseMoved(int x, int y ){
   ofVec2f heading = ofVec2f((_mx / _w) - 0.5, 
 			    ((_h - _my) / _h) - 0.5);
 
-  p->setCameraDirectionX(heading[0]);
-  p->setCameraDirectionY(heading[1]);
+  //p->setCameraDirectionX(heading[0]);
+  //p->setCameraDirectionY(heading[1]);
 }
 
 //--------------------------------------------------------------

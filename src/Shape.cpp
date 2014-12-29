@@ -3,8 +3,6 @@
 Shape::Shape(ofVec3f position, float horizon) {
   mOpenTime = ofGetElapsedTimef();
   mElapsedTime = 0.0;
-  mColor.setHsb(128, 255, 255, 255);
-  mInitialColor.setHsb(128, 255, 255, 255);
   mRotation = 0;
   mPosition = position;
   mInitialPositionZ = mPosition[2];
@@ -15,6 +13,9 @@ Shape::Shape(ofVec3f position, float horizon) {
   mTimeToHorizon = 10.0;
   mSpeed = -0.25;
   mRotationSpeed = 0.0;
+  mHue = 128;
+  mSaturation = 255;
+  mBrightness = 255;
   mAlpha = 255;
 }
 
@@ -26,16 +27,17 @@ void Shape::update(double time, float cameraPosition) {
   mDistanceFromCamera = abs(cameraPosition + mPosition[2]);
   mElapsedTime = ofGetElapsedTimef() - mOpenTime;
   mPosition[2] += mSpeed;
-  mColor.setBrightness(ofMap(mDistanceFromCamera, 0.0, mHorizon, mInitialColor[3], 10.0));
+  mAlpha = ofMap(mDistanceFromCamera, 0.0, mHorizon, 255.0, 10.0);
   mRotation += mRotationSpeed;
 }
 
-void Shape::draw() {
+void Shape::draw(float alpha) {
   ofPushMatrix();
   ofPushStyle();
   ofEnableAlphaBlending();
   ofRotateZ(mRotation);
-  ofSetColor(mColor);
+  //set buffer alpha
+  ofSetColor(ofColor::fromHsb(mHue, mSaturation, mBrightness, mAlpha*alpha));
   ofSetLineWidth(ofMap(mDistanceFromCamera, 0.0, mHorizon, 3.0, 0.0));
   ofTranslate(mPosition[0], mPosition[1], mPosition[2]);
   ofLine(-mWidth, -mHeight,  mWidth, -mHeight);  
@@ -70,16 +72,12 @@ ofVec3f Shape::getPosition() {
   return mPosition;
 }
 
-void Shape::setColor(float hue, float saturation, float brightness) {
-  mColor.setHsb(hue, saturation, brightness);
-}
-
 void Shape::setHue(float hue) {
-  mColor.setHue(hue);
+  mHue = hue;
 }
 
 void Shape::setSaturation(float sat) {
-  mColor.setSaturation(sat);
+  mSaturation = sat;
 }
 
 void Shape::setRotation(float rotation) {

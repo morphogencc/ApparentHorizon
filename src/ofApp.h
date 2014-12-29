@@ -33,8 +33,10 @@ class ofApp : public ofBaseApp{
 		int oscPort;
 		double mElapsedTime;
 		Perspective* p;
+		Perspective* q;
 		float mZoom;
 		bool mDebug;
+		float pAlpha, qAlpha;
 };
 
 #endif

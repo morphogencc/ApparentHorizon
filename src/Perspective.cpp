@@ -1,6 +1,6 @@
 #include "Perspective.h"
 
-Perspective::Perspective() {
+Perspective::Perspective(float leftAngle, float rightAngle) {
   mOpenTime = 0;
   mElapsedTime = 0;
   mGridZ = 10;
@@ -13,10 +13,14 @@ Perspective::Perspective() {
   mShapeSpeed = -0.25;
   mShapeRotationSpeed = 0.0;
   mShapeSaturation = 255;
+  mAlpha = 1.0;
+
   width = ofGetWidth();
   height = ofGetHeight();
   mLeftFbo.allocate(width / 2.0, height);
   mRightFbo.allocate(width / 2.0, height);
+  mLeftAngle = leftAngle;
+  mRightAngle = rightAngle;
 }
 
 void Perspective::beginProjection(float rotationAngle) {   
@@ -100,9 +104,6 @@ void Perspective::addRightTriangle(int type, int hue) {
   mShapes.push_back(t);
 }
 
-void Perspective::addCube() {
-}
-
 void Perspective::update(double time) {
   for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ) {
     if((*it)->isAlive()) {
@@ -121,16 +122,16 @@ void Perspective::update(double time) {
 
 void Perspective::draw() {
   mLeftFbo.begin();
-  ofBackground(0);
-  beginProjection(0);
+  ofBackground(0, 255*mAlpha);
+  beginProjection(mLeftAngle);
   drawGrid();
   drawShapes();
   endProjection();
   mLeftFbo.end();
 
   mRightFbo.begin();
-  ofBackground(0);
-  beginProjection(90);
+  ofBackground(0, 255*mAlpha);
+  beginProjection(mRightAngle);
   drawGrid();
   drawShapes();
   endProjection();
@@ -153,7 +154,7 @@ void Perspective::reset() {
 
 void Perspective::drawShapes() {
   for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
-    (*it)->draw();
+    (*it)->draw(mAlpha);
   }
 }
 
@@ -165,9 +166,9 @@ void Perspective::drawGrid() {
   float cameraOffset = mPosition[2] - fmodf(mPosition[2],mGridZ) - mGridZ;
   
   ofPushStyle();  
+  ofSetLineWidth(1);
+  ofSetColor(255,255,255, 80 * mAlpha);  
   for (int i = 0; i < mGridZ; i++) {  
-    ofSetLineWidth(1);
-    ofSetColor(255,255,255,80);  
     ofPushMatrix();  
     ofTranslate(.0f, .0f, -(i*stepSize) - cameraOffset);
     ofLine(-frameW, -frameH,  frameW, -frameH);  
@@ -185,6 +186,14 @@ void Perspective::drawGrid() {
     ofLine(-frameW,  _y,  -cameraOffset, -frameW,  _y, -mHorizonDistance - cameraOffset);
   }
   ofPopStyle();
+}
+
+void Perspective::setAlpha(float alpha) {
+  mAlpha = alpha;
+}
+
+float Perspective::getAlpha() {
+  return mAlpha;
 }
 
 void Perspective::setShapeSaturation(float newSaturation) {

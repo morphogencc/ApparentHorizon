@@ -5,13 +5,12 @@
 #include "horizonRect.h"
 #include "horizonTriangle.h"
 #include "horizonRightTriangle.h"
-#include "horizonCube.h"
 #include "pingPong.h"
 #include <deque>
 
 class Perspective {
  public:
-  Perspective();
+  Perspective(float leftAngle, float rightAngle);
   ~Perspective();
   void beginProjection(float rotationAngle);
   void endProjection();
@@ -21,12 +20,13 @@ class Perspective {
   void addTriangle(int type, int hue);
   void addRightTriangle();
   void addRightTriangle(int type, int hue);
-  void addCube();
   void update(double time);
   void draw();
   void reset();
   void drawShapes();
   void drawGrid();
+  void setAlpha(float alpha);
+  float getAlpha();
   void setShapeSaturation(float newSaturation);
   void setShapeSpeed(float newSpeed);
   void setShapeRotationSpeed(float newSpeed);
@@ -38,6 +38,8 @@ class Perspective {
   float width, height;
   ofFbo mLeftFbo;
   ofFbo mRightFbo;
+  float mLeftAngle;
+  float mRightAngle;
   int mGridZ;
   int mGridXY;
   float mHorizonDistance;
@@ -49,6 +51,7 @@ class Perspective {
   float mShapeSaturation;
   float mShapeSpeed;
   float mShapeRotationSpeed;
+  float mAlpha;
   ofVec3f mCameraDirection;
    deque<ofPtr<Shape> > mShapes;
 };

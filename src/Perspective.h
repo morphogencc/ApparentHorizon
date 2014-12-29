@@ -18,9 +18,9 @@ class Perspective {
   void addRect();
   void addRect(int type, int hue);
   void addTriangle();
-  void addTriangle(int type);
+  void addTriangle(int type, int hue);
   void addRightTriangle();
-  void addRightTriangle(int type);
+  void addRightTriangle(int type, int hue);
   void addCube();
   void update(double time);
   void draw();
@@ -47,5 +47,5 @@ class Perspective {
   ofVec3f mPosition;
   float mZoomSpeed;
   ofVec3f mCameraDirection;
-   deque<Shape*> mShapes;
+   deque<ofPtr<Shape> > mShapes;
 };

@@ -65,43 +65,48 @@ void Perspective::endProjection() {
 }
 
 void Perspective::addRect() {
-  mShapes.push_back(new horizonRect(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  mShapes.push_back(r);
 }
 
 void Perspective::addRect(int type, int hue) {
-  horizonRect* r = new horizonRect(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type);
+  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
   r->setHue(ofMap(hue, 0, 127, 64, 255));
   mShapes.push_back(r);
 }
 
 void Perspective::addTriangle() {
-  mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  mShapes.push_back(t);
 }
 
-void Perspective::addTriangle(int type) {
-  mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
+void Perspective::addTriangle(int type, int hue) {
+  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
+  t->setHue(ofMap(hue, 0, 127, 64, 255));
+  mShapes.push_back(t);
 }
 
 void Perspective::addRightTriangle() {
-  mShapes.push_back(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  mShapes.push_back(t);
 }
 
-void Perspective::addRightTriangle(int type) {
-  mShapes.push_back(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
+void Perspective::addRightTriangle(int type, int hue) {
+  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
+  t->setHue(ofMap(hue, 0, 127, 64, 255));
+  mShapes.push_back(t);
 }
 
 void Perspective::addCube() {
-  mShapes.push_back(new horizonCube(ofVec3f(0, 0, -mPosition[2]), ofVec3f(0.25, 0.25, 0.25), mHorizonDistance));
 }
 
 void Perspective::update(double time) {
-  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ) {
+  for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ) {
     if((*it)->isAlive()) {
       it = mShapes.erase(it);
     }
     else {
       (*it)->update(time, mPosition[2]);
-      //(*it)->setRotation(ofMap((*it)->getElapsedTime(), 0, 1, 0, 180));
       ++it;
     }
   }
@@ -141,7 +146,7 @@ void Perspective::reset() {
 }
 
 void Perspective::drawShapes() {
-  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+  for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->draw();
   }
 }
@@ -177,19 +182,19 @@ void Perspective::drawGrid() {
 }
 
 void Perspective::setShapeSaturation(float newSaturation) {
-  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+  for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->setSaturation(newSaturation);
   }
 }
 
 void Perspective::setShapeSpeed(float newSpeed) {
-  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+  for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->setSpeed(newSpeed);
   }
 }
 
 void Perspective::setShapeRotationSpeed(float newSpeed) {
-  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+  for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->setRotationSpeed(newSpeed);
   }
 }

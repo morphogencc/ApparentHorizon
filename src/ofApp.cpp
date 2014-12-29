@@ -3,19 +3,12 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-  mElapsedTime = 0.0;
-  mZoom = -2.0;
-  mMaxDistance = -20.0;
-
   oscPort = 7000;
   ofLog() << "Listening for OSC messages on port " << oscPort << "\n";
   receiver.setup(oscPort);
 
   p = new Perspective();
-  mDebug = true;
-  
-  //mesh.setMode(OF_PRIMITVE_TRIANGLE_STRIP);
-  
+  mDebug = true;  
 }
 
 //--------------------------------------------------------------
@@ -25,29 +18,21 @@ void ofApp::update() {
   while(receiver.hasWaitingMessages()) {
     int pitch, velocity;
     ofxOscMessage m;
+
     receiver.getNextMessage(&m);
-    if(mDebug) {      
-      ofLog() << "Message: " << m.getAddress();
+
+    if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
+      pitch = m.getArgAsInt32(0);
     }
-    if(m.getNumArgs() > 0) {
-      if(mDebug) {
-	ofLog() << "Value: " << m.getArgAsString(0);
-	ofLog() << "Value type: " << m.getArgType(0);
-      }
+    if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
+      velocity = m.getArgAsInt32(1);
     }
+
     if(m.getAddress() == "/create/rect") {
       if(m.getNumArgs() == 0) {
 	p->addRect();
       }
       else {  
-	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
-	  pitch = m.getArgAsInt32(0);
-	  ofLog() << "Pitch: " << ofToString(pitch);
-	}
-	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
-	  velocity = m.getArgAsInt32(1);
-	  ofLog() << "Velocity: " << ofToString(velocity);
-	}
 	p->addRect(pitch, velocity);
       }
     }    
@@ -56,30 +41,18 @@ void ofApp::update() {
 	p->addTriangle();
       }
       else {  
-	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
-	  pitch = m.getArgAsInt32(0);
-	  ofLog() << "Pitch: " << ofToString(pitch);
-	}
-	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
-	  velocity = m.getArgAsInt32(1);
-	  ofLog() << "Velocity: " << ofToString(velocity);
-	}
-	p->addTriangle(pitch); //TRIANGLE
+	p->addTriangle(pitch, velocity);
       }
     }
     else if(m.getAddress() == "/create/righttriangle") {
-      if(m.getArgType(0) == OFXOSC_TYPE_FLOAT) { 
-	int triangleType = (int)m.getArgAsFloat(0);
-	p->addRightTriangle(triangleType);
+      if(m.getNumArgs() == 0) { 
+	p->addRightTriangle();
       }
       else {
-	p->addRightTriangle();
+	p->addRightTriangle(pitch, velocity);
       }
     }
     
-    else if(m.getAddress() == "/create/cube") {
-      p->addCube();
-    }    
     else if(m.getAddress() == "/camera/speed") {
       if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
 	float speed = ofMap(m.getArgAsInt32(0), 0, 127, -1.0, 1.0);
@@ -145,15 +118,6 @@ void ofApp::keyPressed(int key){
   }
   if(key == 't') {
     p->addTriangle();
-  }
-  if(key == 'y') {
-    p->addTriangle(0);
-  }
-  if(key == 'u') {
-    p->addTriangle(2);
-  }
-  if(key == 'c') {
-    p->addCube();
   }
   if(key == 'r') {
     p->addRightTriangle();

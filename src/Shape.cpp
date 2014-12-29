@@ -14,9 +14,11 @@ Shape::Shape(ofVec3f position, float horizon) {
   mHeight = 1.0;
   mTimeToHorizon = 10.0;
   mSpeed = -0.25;
+  mRotationSpeed = 0.0;
 }
 
 Shape::~Shape() {
+
 }
 
 void Shape::update(double time, float cameraPosition) {
@@ -24,6 +26,7 @@ void Shape::update(double time, float cameraPosition) {
   mElapsedTime = ofGetElapsedTimef() - mOpenTime;
   mPosition[2] += mSpeed;
   mColor.setBrightness(ofMap(mDistanceFromCamera, 0.0, mHorizon, mInitialColor[2], 10.0));
+  mRotation += mRotationSpeed;
 }
 
 void Shape::draw() {
@@ -47,6 +50,14 @@ bool Shape::isAlive() {
     return true;
   }
   return false;
+}
+
+void Shape::setSpeed(float newSpeed) {
+  mSpeed = newSpeed;
+}
+
+void Shape::setRotationSpeed(float newSpeed) {
+  mRotationSpeed = newSpeed;
 }
 
 double Shape::getElapsedTime() {

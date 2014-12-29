@@ -176,6 +176,18 @@ void Perspective::drawGrid() {
   ofPopStyle();
 }
 
+void Perspective::setShapeSpeed(float newSpeed) {
+  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+    (*it)->setSpeed(newSpeed);
+  }
+}
+
+void Perspective::setShapeRotationSpeed(float newSpeed) {
+  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+    (*it)->setRotationSpeed(newSpeed);
+  }
+}
+
 void Perspective::translateCamera(float newZ) {
   mPosition[2] = newZ;
 }

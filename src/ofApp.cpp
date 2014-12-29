@@ -1,3 +1,4 @@
+
 #include "ofApp.h"
 
 //--------------------------------------------------------------
@@ -100,6 +101,24 @@ void ofApp::update() {
 	  int heading = m.getArgAsInt32(0);
 	  p->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
 	}
+      }
+    }
+    else if(m.getAddress() == "/shape/speed") {
+      if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
+	float speed = ofMap(m.getArgAsInt32(0), 0, 127, -1.0, 1.0);
+	if(m.getArgAsInt32(0) >= 63 && m.getArgAsInt32(0) <= 65) {
+	  speed = 0;
+	}
+	p->setShapeSpeed(speed);
+      }
+    }
+    else if(m.getAddress() == "/shape/rotationspeed") {
+      if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
+	float speed = ofMap(m.getArgAsInt32(0), 0, 127, -1.0, 1.0);
+	if(m.getArgAsInt32(0) >= 63 && m.getArgAsInt32(0) <= 65) {
+	  speed = 0;
+	}
+	p->setShapeRotationSpeed(speed);
       }
     }
   }

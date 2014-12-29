@@ -10,6 +10,8 @@ class Shape {
   double getElapsedTime();
   ofVec3f getPosition();
   bool isAlive();
+  void setSpeed(float newSpeed);
+  void setRotationSpeed(float newSpeed);
   void setColor(float hue, float saturation, float brightness);
   void setHue(float hue);
   void setSaturation(float sat);
@@ -21,6 +23,7 @@ class Shape {
   float mWidth;
   float mHeight;
   float mSpeed;
+  float mRotationSpeed;
   ofColor mInitialColor;
   ofColor mColor;
   ofVec3f mPosition;

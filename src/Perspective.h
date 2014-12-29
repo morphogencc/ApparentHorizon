@@ -27,6 +27,8 @@ class Perspective {
   void reset();
   void drawShapes();
   void drawGrid();
+  void setShapeSpeed(float newSpeed);
+  void setShapeRotationSpeed(float newSpeed);
   void translateCamera(float newZ);
   void setCameraSpeed(float velocity);
   void setCameraDirectionX(float direction_x);

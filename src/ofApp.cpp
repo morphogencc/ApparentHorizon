@@ -62,20 +62,16 @@ void ofApp::update() {
 	p->setCameraSpeed(speed);
       }
     }
-    else if(m.getAddress() == "/camera/heading") {
-      if(m.getArgType(1) == OFXOSC_TYPE_INT32) { 
-	if(m.getArgAsInt32(1) == 1) {
-	  //change x heading
+    else if(m.getAddress() == "/camera/heading/x") {
+     //change x heading
 	  int heading = m.getArgAsInt32(0);
 	  p->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
 	}
-	if(m.getArgAsInt32(1) == 2) {
+	else if(m.getAddress() == "/camera/heading/y") {
 	  //change y heading
 	  int heading = m.getArgAsInt32(0);
 	  p->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
 	}
-      }
-    }
     else if(m.getAddress() == "/shape/speed") {
       if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
 	float speed = ofMap(m.getArgAsInt32(0), 0, 127, -1.0, 1.0);

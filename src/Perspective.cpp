@@ -10,6 +10,9 @@ Perspective::Perspective() {
   mCameraDirection = ofVec3f(0, 0, -1.0);
   mPosition = ofVec3f(0, 0, -1.0);
   mZoomSpeed = 0.0;
+  mShapeSpeed = -0.25;
+  mShapeRotationSpeed = 0.0;
+  mShapeSaturation = 255;
   width = ofGetWidth();
   height = ofGetHeight();
   mLeftFbo.allocate(width / 2.0, height);

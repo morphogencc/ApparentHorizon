@@ -19,7 +19,6 @@ void ofApp::update() {
     ofxOscMessage m;
     
     receiver.getNextMessage(&m);
-    ofLog(OF_LOG_VERBOSE, "OSC Message: %s", m);
 
     if(m.getAddress() == "/create/rect") {
       if(m.getNumArgs() == 0) {
@@ -28,11 +27,11 @@ void ofApp::update() {
       else {  
 	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
 	  pitch = m.getArgAsInt32(0);
-	  ofLog(OF_LOG_VERBSE, "Pitch: %d", pitch);
+	  ofLog(OF_LOG_VERBOSE, "Pitch: %d", pitch);
 	}
 	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
 	  velocity = m.getArgAsInt32(1);
-	  ofLog(OF_LOG_VERBSE, "Velocity: %d", pitch);
+	  ofLog(OF_LOG_VERBOSE, "Velocity: %d", pitch);
 	}
 	p->addRect(pitch, velocity);
       }
@@ -44,11 +43,11 @@ void ofApp::update() {
       else {
 	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
 	  pitch = m.getArgAsInt32(0);
-	  ofLog(OF_LOG_VERBSE, "Pitch: %d", pitch);
+	  ofLog(OF_LOG_VERBOSE, "Pitch: %d", pitch);
 	}
 	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
 	  velocity = m.getArgAsInt32(1);
-	  ofLog(OF_LOG_VERBSE, "Velocity: %d", pitch);
+	  ofLog(OF_LOG_VERBOSE, "Velocity: %d", pitch);
 	}
 	p->addTriangle(pitch, velocity);
       }
@@ -60,11 +59,11 @@ void ofApp::update() {
       else {
 	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
 	  pitch = m.getArgAsInt32(0);
-	  ofLog(OF_LOG_VERBSE, "Pitch: %d", pitch);
+	  ofLog(OF_LOG_VERBOSE, "Pitch: %d", pitch);
 	}
 	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
 	  velocity = m.getArgAsInt32(1);
-	  ofLog(OF_LOG_VERBSE, "Velocity: %d", pitch);
+	  ofLog(OF_LOG_VERBOSE, "Velocity: %d", pitch);
 	}
 	p->addRightTriangle(pitch, velocity);
       }

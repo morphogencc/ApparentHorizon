@@ -15,6 +15,7 @@ Shape::Shape(ofVec3f position, float horizon) {
   mTimeToHorizon = 10.0;
   mSpeed = -0.25;
   mRotationSpeed = 0.0;
+  mAlpha = 255;
 }
 
 Shape::~Shape() {
@@ -25,22 +26,23 @@ void Shape::update(double time, float cameraPosition) {
   mDistanceFromCamera = abs(cameraPosition + mPosition[2]);
   mElapsedTime = ofGetElapsedTimef() - mOpenTime;
   mPosition[2] += mSpeed;
-  mColor.setBrightness(ofMap(mDistanceFromCamera, 0.0, mHorizon, mInitialColor[2], 10.0));
+  mColor.setBrightness(ofMap(mDistanceFromCamera, 0.0, mHorizon, mInitialColor[3], 10.0));
   mRotation += mRotationSpeed;
 }
 
 void Shape::draw() {
   ofPushMatrix();
   ofPushStyle();
+  ofEnableAlphaBlending();
   ofRotateZ(mRotation);
-  ofFill();
-  ofColor(mColor);
+  ofSetColor(mColor);
   ofSetLineWidth(ofMap(mDistanceFromCamera, 0.0, mHorizon, 3.0, 0.0));
   ofTranslate(mPosition[0], mPosition[1], mPosition[2]);
   ofLine(-mWidth, -mHeight,  mWidth, -mHeight);  
   ofLine( mWidth, -mHeight,  mWidth,  mHeight);  
   ofLine( mWidth,  mHeight, -mWidth,  mHeight);  
   ofLine(-mWidth,  mHeight, -mWidth, -mHeight);
+  ofDisableAlphaBlending();
   ofPopStyle();
   ofPopMatrix();
 }

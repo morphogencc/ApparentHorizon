@@ -24,6 +24,7 @@ class Shape {
   float mHeight;
   float mSpeed;
   float mRotationSpeed;
+  float mAlpha;
   ofColor mInitialColor;
   ofColor mColor;
   ofVec3f mPosition;

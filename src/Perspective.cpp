@@ -107,6 +107,9 @@ void Perspective::update(double time) {
     }
     else {
       (*it)->update(time, mPosition[2]);
+      (*it)->setSaturation(mShapeSaturation);
+      (*it)->setSpeed(mShapeSpeed);
+      (*it)->setRotationSpeed(mShapeRotationSpeed);
       ++it;
     }
   }
@@ -182,18 +185,21 @@ void Perspective::drawGrid() {
 }
 
 void Perspective::setShapeSaturation(float newSaturation) {
+  mShapeSaturation = newSaturation;
   for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->setSaturation(newSaturation);
   }
 }
 
 void Perspective::setShapeSpeed(float newSpeed) {
+  mShapeSpeed = newSpeed;
   for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->setSpeed(newSpeed);
   }
 }
 
 void Perspective::setShapeRotationSpeed(float newSpeed) {
+  mShapeRotationSpeed = newSpeed;
   for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->setRotationSpeed(newSpeed);
   }

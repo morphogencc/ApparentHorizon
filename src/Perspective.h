@@ -46,6 +46,9 @@ class Perspective {
   double fNear, fFar, fFov;  
   ofVec3f mPosition;
   float mZoomSpeed;
+  float mShapeSaturation;
+  float mShapeSpeed;
+  float mShapeRotationSpeed;
   ofVec3f mCameraDirection;
    deque<ofPtr<Shape> > mShapes;
 };

@@ -8,7 +8,6 @@ void ofApp::setup(){
   receiver.setup(oscPort);
 
   p = new Perspective();
-  mDebug = true;  
 }
 
 //--------------------------------------------------------------
@@ -18,21 +17,23 @@ void ofApp::update() {
   while(receiver.hasWaitingMessages()) {
     int pitch, velocity;
     ofxOscMessage m;
-
+    
     receiver.getNextMessage(&m);
-
-    if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
-      pitch = m.getArgAsInt32(0);
-    }
-    if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
-      velocity = m.getArgAsInt32(1);
-    }
+    ofLog(OF_LOG_VERBOSE, "OSC Message: %s", m);
 
     if(m.getAddress() == "/create/rect") {
       if(m.getNumArgs() == 0) {
 	p->addRect();
       }
       else {  
+	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
+	  pitch = m.getArgAsInt32(0);
+	  ofLog(OF_LOG_VERBSE, "Pitch: %d", pitch);
+	}
+	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
+	  velocity = m.getArgAsInt32(1);
+	  ofLog(OF_LOG_VERBSE, "Velocity: %d", pitch);
+	}
 	p->addRect(pitch, velocity);
       }
     }    
@@ -40,7 +41,15 @@ void ofApp::update() {
       if(m.getNumArgs() == 0) {
 	p->addTriangle();
       }
-      else {  
+      else {
+	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
+	  pitch = m.getArgAsInt32(0);
+	  ofLog(OF_LOG_VERBSE, "Pitch: %d", pitch);
+	}
+	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
+	  velocity = m.getArgAsInt32(1);
+	  ofLog(OF_LOG_VERBSE, "Velocity: %d", pitch);
+	}
 	p->addTriangle(pitch, velocity);
       }
     }
@@ -49,6 +58,14 @@ void ofApp::update() {
 	p->addRightTriangle();
       }
       else {
+	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
+	  pitch = m.getArgAsInt32(0);
+	  ofLog(OF_LOG_VERBSE, "Pitch: %d", pitch);
+	}
+	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
+	  velocity = m.getArgAsInt32(1);
+	  ofLog(OF_LOG_VERBSE, "Velocity: %d", pitch);
+	}
 	p->addRightTriangle(pitch, velocity);
       }
     }

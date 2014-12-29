@@ -121,6 +121,12 @@ void ofApp::update() {
 	p->setShapeRotationSpeed(speed);
       }
     }
+    else if(m.getAddress() == "/color/saturation") {
+      if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
+	float saturation = ofMap(m.getArgAsInt32(0), 0, 127, 0, 255);
+	p->setShapeSaturation(saturation);
+      }
+    }
   }
 }
 

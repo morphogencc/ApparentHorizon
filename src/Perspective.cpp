@@ -176,6 +176,12 @@ void Perspective::drawGrid() {
   ofPopStyle();
 }
 
+void Perspective::setShapeSaturation(float newSaturation) {
+  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+    (*it)->setSaturation(newSaturation);
+  }
+}
+
 void Perspective::setShapeSpeed(float newSpeed) {
   for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->setSpeed(newSpeed);

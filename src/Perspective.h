@@ -27,6 +27,7 @@ class Perspective {
   void reset();
   void drawShapes();
   void drawGrid();
+  void setShapeSaturation(float newSaturation);
   void setShapeSpeed(float newSpeed);
   void setShapeRotationSpeed(float newSpeed);
   void translateCamera(float newZ);

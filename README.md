@@ -15,12 +15,10 @@ Current messages are:
 - `/camera/position` -- move the camera to the position of the argument (starts at z = -2.0; negative z is forward)
 - `/camera/heading value heading` where value is the angle to change our heading by, and the heading is 1 for 'x' and 2
   for 'y'.
-
-Messages to be implemented are:
-- `/perspective/alpha value perspectiveId` -- set the alpha value of a perpsective `perspectiveId` (0 or 1 for now)
+- `/perspective/left/alpha value` -- set the alpha value of the 'left' perspective
+- `/perspective/right/alpha value` -- set the alpha value of the 'right' perspective
 
 # TO DO
 - Get screen working on two cameras / monitors
-- Replace brightness with alpha
 - smoothing for camera x/y
 - color palette

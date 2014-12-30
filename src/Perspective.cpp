@@ -9,7 +9,7 @@ Perspective::Perspective(float leftAngle, float rightAngle) {
   mHorizonDistance = 100.0f;
   mCameraDirection = ofVec3f(0, 0, -1.0);
   mPosition = ofVec3f(0, 0, -1.0);
-  mZoomSpeed = 0.0;
+  mZoomSpeed = 0.2;
   mShapeSpeed = -0.25;
   mShapeRotationSpeed = 0.0;
   mShapeSaturation = 255;
@@ -31,11 +31,10 @@ void Perspective::beginProjection(float rotationAngle) {
   glPushMatrix(); 
 
   fNear = 0.5f;  
-  fFov = 0.5;
-  //fFov = tan(30 * PI / 360);  
-  //fFov = tan(90 * PI / 360.0 );
+  fFov = 1.0; // originally 0.5
+  //1.0 and 1.25 look good
              
-  float ratio = 0.5 * ofGetWidth() / ofGetHeight();  
+  float ratio = 0.5*ofGetWidth() / ofGetHeight();  
 
   glMatrixMode(GL_PROJECTION);  
   glLoadIdentity();  
@@ -59,9 +58,9 @@ void Perspective::beginProjection(float rotationAngle) {
 	    1, 
 	    0);
 
+  glRotatef(rotationAngle, 0, 1, 0);
   glTranslatef(mPosition[0], mPosition[1], mPosition[2]);
 
-  glRotatef(rotationAngle, 0, 1, 0);
 }  
 
 void Perspective::endProjection() {  
@@ -72,34 +71,34 @@ void Perspective::endProjection() {
 }
 
 void Perspective::addRect() {
-  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance));
   mShapes.push_back(r);
 }
 
 void Perspective::addRect(int type, int hue) {
-  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
+  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance, type));
   r->setHue(ofMap(hue, 0, 127, 64, 255));
   mShapes.push_back(r);
 }
 
 void Perspective::addTriangle() {
-  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance));
   mShapes.push_back(t);
 }
 
 void Perspective::addTriangle(int type, int hue) {
-  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
+  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance, type));
   t->setHue(ofMap(hue, 0, 127, 64, 255));
   mShapes.push_back(t);
 }
 
 void Perspective::addRightTriangle() {
-  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance));
   mShapes.push_back(t);
 }
 
 void Perspective::addRightTriangle(int type, int hue) {
-  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
+  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance, type));
   t->setHue(ofMap(hue, 0, 127, 64, 255));
   mShapes.push_back(t);
 }

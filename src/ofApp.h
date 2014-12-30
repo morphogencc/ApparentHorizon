@@ -36,6 +36,7 @@ class ofApp : public ofBaseApp{
 		Perspective* q;
 		float mZoom;
 		bool mDebug;
+		bool mFPS;
 		float pAlpha, qAlpha;
 };
 

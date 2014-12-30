@@ -9,10 +9,12 @@ void ofApp::setup(){
 
   p = new Perspective(0, 90);
   q = new Perspective(-90, 0);
-  pAlpha = 0;
-  qAlpha = 1;
+  pAlpha = 1;
+  qAlpha = 0;
   p->setAlpha(pAlpha);
   q->setAlpha(qAlpha);
+
+  mFPS = true;
 }
 
 //--------------------------------------------------------------
@@ -171,9 +173,11 @@ void ofApp::draw(){
     q->draw();    
   }
   ofDisableAlphaBlending();
-
-  string info = ofToString(ofGetFrameRate(), 2)+"\n";
-  ofDrawBitmapStringHighlight(info, 30, 30);
+  
+  if(mFPS) {
+    string info = ofToString(ofGetFrameRate(), 2)+"\n";
+    ofDrawBitmapStringHighlight(info, 30, 30);
+  }
 }
 
 //--------------------------------------------------------------
@@ -187,11 +191,14 @@ void ofApp::keyPressed(int key){
     q->addTriangle();
   }
   if(key == 'r') {
-    p->addRightTriangle();
-    q->addRightTriangle();
+    p->addRect();
+    q->addRect();
   }
   if(key == 's') {
     ofSaveFrame();
+  }
+  if(key == 'f') {
+    mFPS = !mFPS;
   }
 }
 
@@ -210,8 +217,8 @@ void ofApp::mouseMoved(int x, int y ){
   ofVec2f heading = ofVec2f((_mx / _w) - 0.5, 
 			    ((_h - _my) / _h) - 0.5);
 
-  //p->setCameraDirectionX(heading[0]);
-  //p->setCameraDirectionY(heading[1]);
+  p->setCameraDirectionX(heading[0]);
+  p->setCameraDirectionY(heading[1]);
 }
 
 //--------------------------------------------------------------

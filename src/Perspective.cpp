@@ -9,7 +9,7 @@ Perspective::Perspective(float leftAngle, float rightAngle) {
   mHorizonDistance = 100.0f;
   mCameraDirection = ofVec3f(0, 0, -1.0);
   mPosition = ofVec3f(0, 0, -1.0);
-  mZoomSpeed = 0.2;
+  mZoomSpeed = 0.0;
   mShapeSpeed = -0.25;
   mShapeRotationSpeed = 0.0;
   mShapeSaturation = 255;

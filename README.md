@@ -17,8 +17,3 @@ Current messages are:
   for 'y'.
 - `/perspective/left/alpha value` -- set the alpha value of the 'left' perspective
 - `/perspective/right/alpha value` -- set the alpha value of the 'right' perspective
-
-# TO DO
-- Get screen working on two cameras / monitors
-- smoothing for camera x/y
-- color palette

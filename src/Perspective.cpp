@@ -71,34 +71,34 @@ void Perspective::endProjection() {
 }
 
 void Perspective::addRect() {
-  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance));
+  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance));
   mShapes.push_back(r);
 }
 
 void Perspective::addRect(int type, int hue) {
-  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance, type));
+  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance, type));
   r->setHue(hue);
   mShapes.push_back(r);
 }
 
 void Perspective::addTriangle() {
-  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance));
+  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance));
   mShapes.push_back(t);
 }
 
 void Perspective::addTriangle(int type, int hue) {
-  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance, type));
+  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance, type));
   t->setHue(hue);
   mShapes.push_back(t);
 }
 
 void Perspective::addRightTriangle() {
-  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance));
+  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance));
   mShapes.push_back(t);
 }
 
 void Perspective::addRightTriangle(int type, int hue) {
-  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance, type));
+  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance, type));
   t->setHue(hue);
   mShapes.push_back(t);
 }
@@ -225,9 +225,10 @@ void Perspective::setCameraSpeed(float velocity) {
 }
 
 void Perspective::setCameraDirectionX(float direction_x) {
-  mCameraDirection[0] = direction_x;
+  //mCameraDirection[0] = direction_x;
+  mCameraDirection[0] += 0.75*(direction_x - mCameraDirection[0]);
  }
 
 void Perspective::setCameraDirectionY(float direction_y) {
-  mCameraDirection[1] = direction_y;
+  mCameraDirection[1] += 0.75*(direction_y - mCameraDirection[1]);
 }

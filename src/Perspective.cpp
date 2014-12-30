@@ -77,7 +77,7 @@ void Perspective::addRect() {
 
 void Perspective::addRect(int type, int hue) {
   ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance, type));
-  r->setHue(ofMap(hue, 0, 127, 64, 255));
+  r->setHue(hue);
   mShapes.push_back(r);
 }
 
@@ -88,7 +88,7 @@ void Perspective::addTriangle() {
 
 void Perspective::addTriangle(int type, int hue) {
   ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance, type));
-  t->setHue(ofMap(hue, 0, 127, 64, 255));
+  t->setHue(hue);
   mShapes.push_back(t);
 }
 
@@ -99,7 +99,7 @@ void Perspective::addRightTriangle() {
 
 void Perspective::addRightTriangle(int type, int hue) {
   ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2] + 0.5), mHorizonDistance, type));
-  t->setHue(ofMap(hue, 0, 127, 64, 255));
+  t->setHue(hue);
   mShapes.push_back(t);
 }
 

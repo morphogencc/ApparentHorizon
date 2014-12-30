@@ -13,7 +13,8 @@ Shape::Shape(ofVec3f position, float horizon) {
   mTimeToHorizon = 10.0;
   mSpeed = -0.25;
   mRotationSpeed = 0.0;
-  mHue = 128;
+  mHue = 0;
+  Shape::setHue(ofRandom(3));
   mSaturation = 255;
   mBrightness = 255;
   mAlpha = 255;
@@ -72,8 +73,20 @@ ofVec3f Shape::getPosition() {
   return mPosition;
 }
 
-void Shape::setHue(float hue) {
-  mHue = hue;
+void Shape::setHue(int hue) {
+  hue = hue % 3;
+  switch(hue) {
+  case 0:
+    mHue = 173.541;
+    break;
+  case 1:
+    mHue = 204.415;
+    break;
+  case 2:
+    mHue = 141.667;
+    break;
+  }
+
 }
 
 void Shape::setSaturation(float sat) {

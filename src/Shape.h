@@ -12,7 +12,7 @@ class Shape {
   bool isAlive();
   void setSpeed(float newSpeed);
   void setRotationSpeed(float newSpeed);
-  void setHue(float hue);
+  void setHue(int hue);
   void setSaturation(float sat);
   void setRotation(float rotation);
  protected:
@@ -27,6 +27,8 @@ class Shape {
   float mSaturation;
   float mBrightness;
   float mAlpha;
+  int mLowerHueThreshold;
+  int mUpperHueThreshold;
   ofVec3f mPosition;
   float mHorizon;
   float mRotation;

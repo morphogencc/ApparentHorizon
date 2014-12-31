@@ -7,7 +7,7 @@ class horizonTriangle : public Shape {
   horizonTriangle(ofVec3f position, float horizon);
   horizonTriangle(ofVec3f position, float horizon, int type);
   ~horizonTriangle();
-  void draw();
+  void draw(float alpha);
  private:
   int mTriangleType;
 };

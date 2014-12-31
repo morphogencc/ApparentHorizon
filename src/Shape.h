@@ -6,14 +6,13 @@ class Shape {
   Shape(ofVec3f position, float horizon);
   ~Shape();
   void update(double time, float cameraPosition);
-  virtual void draw();
+  virtual void draw(float alpha);
   double getElapsedTime();
   ofVec3f getPosition();
   bool isAlive();
   void setSpeed(float newSpeed);
   void setRotationSpeed(float newSpeed);
-  void setColor(float hue, float saturation, float brightness);
-  void setHue(float hue);
+  void setHue(int hue);
   void setSaturation(float sat);
   void setRotation(float rotation);
  protected:
@@ -24,8 +23,12 @@ class Shape {
   float mHeight;
   float mSpeed;
   float mRotationSpeed;
-  ofColor mInitialColor;
-  ofColor mColor;
+  float mHue;
+  float mSaturation;
+  float mBrightness;
+  float mAlpha;
+  int mLowerHueThreshold;
+  int mUpperHueThreshold;
   ofVec3f mPosition;
   float mHorizon;
   float mRotation;

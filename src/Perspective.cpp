@@ -1,6 +1,6 @@
 #include "Perspective.h"
 
-Perspective::Perspective() {
+Perspective::Perspective(float leftAngle, float rightAngle) {
   mOpenTime = 0;
   mElapsedTime = 0;
   mGridZ = 10;
@@ -10,10 +10,17 @@ Perspective::Perspective() {
   mCameraDirection = ofVec3f(0, 0, -1.0);
   mPosition = ofVec3f(0, 0, -1.0);
   mZoomSpeed = 0.0;
+  mShapeSpeed = -0.25;
+  mShapeRotationSpeed = 0.0;
+  mShapeSaturation = 255;
+  mAlpha = 1.0;
+
   width = ofGetWidth();
   height = ofGetHeight();
   mLeftFbo.allocate(width / 2.0, height);
   mRightFbo.allocate(width / 2.0, height);
+  mLeftAngle = leftAngle;
+  mRightAngle = rightAngle;
 }
 
 void Perspective::beginProjection(float rotationAngle) {   
@@ -24,11 +31,10 @@ void Perspective::beginProjection(float rotationAngle) {
   glPushMatrix(); 
 
   fNear = 0.5f;  
-  fFov = 0.5;
-  //fFov = tan(30 * PI / 360);  
-  //fFov = tan(90 * PI / 360.0 );
+  fFov = 1.0; // originally 0.5
+  //1.0 and 1.25 look good
              
-  float ratio = 0.5 * ofGetWidth() / ofGetHeight();  
+  float ratio = 0.5*ofGetWidth() / ofGetHeight();  
 
   glMatrixMode(GL_PROJECTION);  
   glLoadIdentity();  
@@ -52,9 +58,9 @@ void Perspective::beginProjection(float rotationAngle) {
 	    1, 
 	    0);
 
+  glRotatef(rotationAngle, 0, 1, 0);
   glTranslatef(mPosition[0], mPosition[1], mPosition[2]);
 
-  glRotatef(rotationAngle, 0, 1, 0);
 }  
 
 void Perspective::endProjection() {  
@@ -65,43 +71,48 @@ void Perspective::endProjection() {
 }
 
 void Perspective::addRect() {
-  mShapes.push_back(new horizonRect(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance));
+  mShapes.push_back(r);
 }
 
 void Perspective::addRect(int type, int hue) {
-  horizonRect* r = new horizonRect(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type);
-  r->setHue(ofMap(hue, 0, 127, 64, 255));
+  ofPtr<horizonRect> r(new horizonRect(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance, type));
+  r->setHue(hue);
   mShapes.push_back(r);
 }
 
 void Perspective::addTriangle() {
-  mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance));
+  mShapes.push_back(t);
 }
 
-void Perspective::addTriangle(int type) {
-  mShapes.push_back(new horizonTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
+void Perspective::addTriangle(int type, int hue) {
+  ofPtr<horizonTriangle> t(new horizonTriangle(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance, type));
+  t->setHue(hue);
+  mShapes.push_back(t);
 }
 
 void Perspective::addRightTriangle() {
-  mShapes.push_back(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance));
+  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance));
+  mShapes.push_back(t);
 }
 
-void Perspective::addRightTriangle(int type) {
-  mShapes.push_back(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2]), mHorizonDistance, type));
-}
-
-void Perspective::addCube() {
-  mShapes.push_back(new horizonCube(ofVec3f(0, 0, -mPosition[2]), ofVec3f(0.25, 0.25, 0.25), mHorizonDistance));
+void Perspective::addRightTriangle(int type, int hue) {
+  ofPtr<horizonRightTriangle> t(new horizonRightTriangle(ofVec3f(0, 0, -mPosition[2] + 1.0), mHorizonDistance, type));
+  t->setHue(hue);
+  mShapes.push_back(t);
 }
 
 void Perspective::update(double time) {
-  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ) {
+  for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ) {
     if((*it)->isAlive()) {
       it = mShapes.erase(it);
     }
     else {
       (*it)->update(time, mPosition[2]);
-      //(*it)->setRotation(ofMap((*it)->getElapsedTime(), 0, 1, 0, 180));
+      (*it)->setSaturation(mShapeSaturation);
+      (*it)->setSpeed(mShapeSpeed);
+      (*it)->setRotationSpeed(mShapeRotationSpeed);
       ++it;
     }
   }
@@ -110,16 +121,16 @@ void Perspective::update(double time) {
 
 void Perspective::draw() {
   mLeftFbo.begin();
-  ofBackground(0);
-  beginProjection(0);
+  ofBackground(0, 255*mAlpha);
+  beginProjection(mLeftAngle);
   drawGrid();
   drawShapes();
   endProjection();
   mLeftFbo.end();
 
   mRightFbo.begin();
-  ofBackground(0);
-  beginProjection(90);
+  ofBackground(0, 255*mAlpha);
+  beginProjection(mRightAngle);
   drawGrid();
   drawShapes();
   endProjection();
@@ -141,8 +152,8 @@ void Perspective::reset() {
 }
 
 void Perspective::drawShapes() {
-  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
-    (*it)->draw();
+  for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+    (*it)->draw(mAlpha);
   }
 }
 
@@ -154,9 +165,9 @@ void Perspective::drawGrid() {
   float cameraOffset = mPosition[2] - fmodf(mPosition[2],mGridZ) - mGridZ;
   
   ofPushStyle();  
+  ofSetLineWidth(1);
+  ofSetColor(255,255,255, 80 * mAlpha);  
   for (int i = 0; i < mGridZ; i++) {  
-    ofSetLineWidth(1);
-    ofSetColor(255,255,255,80);  
     ofPushMatrix();  
     ofTranslate(.0f, .0f, -(i*stepSize) - cameraOffset);
     ofLine(-frameW, -frameH,  frameW, -frameH);  
@@ -176,20 +187,31 @@ void Perspective::drawGrid() {
   ofPopStyle();
 }
 
+void Perspective::setAlpha(float alpha) {
+  mAlpha = alpha;
+}
+
+float Perspective::getAlpha() {
+  return mAlpha;
+}
+
 void Perspective::setShapeSaturation(float newSaturation) {
-  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+  mShapeSaturation = newSaturation;
+  for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->setSaturation(newSaturation);
   }
 }
 
 void Perspective::setShapeSpeed(float newSpeed) {
-  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+  mShapeSpeed = newSpeed;
+  for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->setSpeed(newSpeed);
   }
 }
 
 void Perspective::setShapeRotationSpeed(float newSpeed) {
-  for(deque<Shape*>::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
+  mShapeRotationSpeed = newSpeed;
+  for(deque<ofPtr<Shape> >::iterator it = mShapes.begin(); it != mShapes.end(); ++it) {
     (*it)->setRotationSpeed(newSpeed);
   }
 }
@@ -203,9 +225,10 @@ void Perspective::setCameraSpeed(float velocity) {
 }
 
 void Perspective::setCameraDirectionX(float direction_x) {
-  mCameraDirection[0] = direction_x;
+  //mCameraDirection[0] = direction_x;
+  mCameraDirection[0] += 0.75*(direction_x - mCameraDirection[0]);
  }
 
 void Perspective::setCameraDirectionY(float direction_y) {
-  mCameraDirection[1] = direction_y;
+  mCameraDirection[1] += 0.75*(direction_y - mCameraDirection[1]);
 }

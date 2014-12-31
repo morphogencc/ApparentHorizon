@@ -12,12 +12,12 @@ horizonTriangle::~horizonTriangle() {
   
 }
 
-void horizonTriangle::draw() {
+void horizonTriangle::draw(float alpha) {
   ofPushMatrix();
   ofPushStyle();
   ofRotateZ(mRotation);
   ofFill();
-  ofSetColor(mColor);
+  ofSetColor(ofColor::fromHsb(mHue, mSaturation, mBrightness, mAlpha*alpha));
   ofSetLineWidth(ofMap(mElapsedTime, 0, mTimeToHorizon, 3.0, 0.0));
   ofTranslate(mPosition[0], mPosition[1], mPosition[2]);  
   switch(mTriangleType) {

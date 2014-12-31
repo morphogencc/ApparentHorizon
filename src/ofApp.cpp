@@ -3,83 +3,88 @@
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-  mElapsedTime = 0.0;
-  mZoom = -2.0;
-  mMaxDistance = -20.0;
-
   oscPort = 7000;
   ofLog() << "Listening for OSC messages on port " << oscPort << "\n";
   receiver.setup(oscPort);
 
-  p = new Perspective();
-  mDebug = true;
-  
-  //mesh.setMode(OF_PRIMITVE_TRIANGLE_STRIP);
-  
+  p = new Perspective(0, 90);
+  q = new Perspective(-90, 0);
+  pAlpha = 1;
+  qAlpha = 0;
+  p->setAlpha(pAlpha);
+  q->setAlpha(qAlpha);
+
+  mFPS = true;
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
   mElapsedTime = ofGetElapsedTimef();
+
   p->update(mElapsedTime);
+  q->update(mElapsedTime);
+
   while(receiver.hasWaitingMessages()) {
     int pitch, velocity;
     ofxOscMessage m;
+    
     receiver.getNextMessage(&m);
-    if(mDebug) {      
-      ofLog() << "Message: " << m.getAddress();
-    }
-    if(m.getNumArgs() > 0) {
-      if(mDebug) {
-	ofLog() << "Value: " << m.getArgAsString(0);
-	ofLog() << "Value type: " << m.getArgType(0);
-      }
-    }
+
     if(m.getAddress() == "/create/rect") {
       if(m.getNumArgs() == 0) {
 	p->addRect();
+	q->addRect();
       }
       else {  
 	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
 	  pitch = m.getArgAsInt32(0);
-	  ofLog() << "Pitch: " << ofToString(pitch);
+	  ofLog(OF_LOG_VERBOSE, "Pitch: %d", pitch);
 	}
 	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
 	  velocity = m.getArgAsInt32(1);
-	  ofLog() << "Velocity: " << ofToString(velocity);
+	  ofLog(OF_LOG_VERBOSE, "Velocity: %d", pitch);
 	}
 	p->addRect(pitch, velocity);
+	q->addRect(pitch, velocity);
       }
     }    
     else if(m.getAddress() == "/create/triangle") {
       if(m.getNumArgs() == 0) {
 	p->addTriangle();
+	q->addTriangle();
       }
-      else {  
+      else {
 	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
 	  pitch = m.getArgAsInt32(0);
-	  ofLog() << "Pitch: " << ofToString(pitch);
+	  ofLog(OF_LOG_VERBOSE, "Pitch: %d", pitch);
 	}
 	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
 	  velocity = m.getArgAsInt32(1);
-	  ofLog() << "Velocity: " << ofToString(velocity);
+	  ofLog(OF_LOG_VERBOSE, "Velocity: %d", pitch);
 	}
-	p->addTriangle(pitch); //TRIANGLE
+	p->addTriangle(pitch, velocity);
+	q->addTriangle(pitch, velocity);
       }
     }
     else if(m.getAddress() == "/create/righttriangle") {
-      if(m.getArgType(0) == OFXOSC_TYPE_FLOAT) { 
-	int triangleType = (int)m.getArgAsFloat(0);
-	p->addRightTriangle(triangleType);
+      if(m.getNumArgs() == 0) { 
+	p->addRightTriangle();
+	q->addRightTriangle();
       }
       else {
-	p->addRightTriangle();
+	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
+	  pitch = m.getArgAsInt32(0);
+	  ofLog(OF_LOG_VERBOSE, "Pitch: %d", pitch);
+	}
+	if(m.getArgType(1) == OFXOSC_TYPE_INT32) {
+	  velocity = m.getArgAsInt32(1);
+	  ofLog(OF_LOG_VERBOSE, "Velocity: %d", pitch);
+	}
+	p->addRightTriangle(pitch, velocity);
+	q->addRightTriangle(pitch, velocity);
       }
     }
     
-    else if(m.getAddress() == "/create/cube") {
-      p->addCube();
-    }    
     else if(m.getAddress() == "/camera/speed") {
       if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
 	float speed = ofMap(m.getArgAsInt32(0), 0, 127, -1.0, 1.0);
@@ -87,18 +92,21 @@ void ofApp::update() {
 	  speed = 0;
 	}
 	p->setCameraSpeed(speed);
+	q->setCameraSpeed(speed);
       }
     }
     else if(m.getAddress() == "/camera/heading/x") {
      //change x heading
-	  int heading = m.getArgAsInt32(0);
-	  p->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
-	}
-	else if(m.getAddress() == "/camera/heading/y") {
-	  //change y heading
-	  int heading = m.getArgAsInt32(0);
-	  p->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
-	}
+      int heading = m.getArgAsInt32(0);
+      p->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
+      q->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
+    }
+    else if(m.getAddress() == "/camera/heading/y") {
+      //change y heading
+      int heading = m.getArgAsInt32(0);
+      p->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
+      q->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
+    }
     else if(m.getAddress() == "/shape/speed") {
       if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
 	float speed = ofMap(m.getArgAsInt32(0), 0, 127, -1.0, 1.0);
@@ -106,6 +114,7 @@ void ofApp::update() {
 	  speed = 0;
 	}
 	p->setShapeSpeed(speed);
+	q->setShapeSpeed(speed);
       }
     }
     else if(m.getAddress() == "/shape/rotationspeed") {
@@ -114,13 +123,39 @@ void ofApp::update() {
 	if(m.getArgAsInt32(0) >= 63 && m.getArgAsInt32(0) <= 65) {
 	  speed = 0;
 	}
-	p->setShapeRotationSpeed(speed);
+	p->setShapeSpeed(speed);
+	q->setShapeSpeed(speed);
       }
     }
     else if(m.getAddress() == "/color/saturation") {
       if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
 	float saturation = ofMap(m.getArgAsInt32(0), 0, 127, 0, 255);
 	p->setShapeSaturation(saturation);
+	q->setShapeSaturation(saturation);
+      }
+    }
+    else if(m.getAddress() == "/perspective/left/alpha") {
+      if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
+	float alpha = ofMap(m.getArgAsInt32(0), 0, 127, 0, 1.0);
+	if(alpha < 0.02) {
+	  alpha = 0;
+	}
+	if(alpha > 0.98) {
+	  alpha = 1.0;
+	}
+	p->setAlpha(alpha);
+      }
+    }
+    else if(m.getAddress() == "/perspective/right/alpha") {
+      if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
+	float alpha = ofMap(m.getArgAsInt32(0), 0, 127, 0, 1.0);
+	if(alpha < 0.02) {
+	  alpha = 0;
+	}
+	if(alpha > 0.98) {
+	  alpha = 1.0;
+	}
+	q->setAlpha(alpha);
       }
     }
   }
@@ -129,33 +164,41 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw(){
   ofBackground(0);
+
   ofEnableAlphaBlending();
-  p->draw();
+  if(p->getAlpha() > 0) {
+    p->draw();    
+  }
+  if(q->getAlpha() > 0) {
+    q->draw();    
+  }
   ofDisableAlphaBlending();
+  
+  if(mFPS) {
+    string info = ofToString(ofGetFrameRate(), 2)+"\n";
+    ofDrawBitmapStringHighlight(info, 30, 30);
+  }
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
   if(key == ' ') {
     p->reset();
+    q->reset();
   }
   if(key == 't') {
     p->addTriangle();
-  }
-  if(key == 'y') {
-    p->addTriangle(0);
-  }
-  if(key == 'u') {
-    p->addTriangle(2);
-  }
-  if(key == 'c') {
-    p->addCube();
+    q->addTriangle();
   }
   if(key == 'r') {
-    p->addRightTriangle();
+    p->addRect();
+    q->addRect();
   }
   if(key == 's') {
     ofSaveFrame();
+  }
+  if(key == 'f') {
+    mFPS = !mFPS;
   }
 }
 
@@ -174,8 +217,8 @@ void ofApp::mouseMoved(int x, int y ){
   ofVec2f heading = ofVec2f((_mx / _w) - 0.5, 
 			    ((_h - _my) / _h) - 0.5);
 
-  //p->setCameraDirectionX(heading[0]);
-  //p->setCameraDirectionY(heading[1]);
+  p->setCameraDirectionX(heading[0]);
+  p->setCameraDirectionY(heading[1]);
 }
 
 //--------------------------------------------------------------

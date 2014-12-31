@@ -33,6 +33,10 @@ void Perspective::beginProjection(float rotationAngle) {
   fNear = 0.5f;  
   fFov = 1.0; // originally 0.5
   //1.0 and 1.25 look good
+
+  if(abs(rotationAngle) == 45) {
+	  fFov = 0.75;
+  }
              
   float ratio = 0.5*ofGetWidth() / ofGetHeight();  
 
@@ -226,9 +230,9 @@ void Perspective::setCameraSpeed(float velocity) {
 
 void Perspective::setCameraDirectionX(float direction_x) {
   //mCameraDirection[0] = direction_x;
-  mCameraDirection[0] += 0.75*(direction_x - mCameraDirection[0]);
+  mCameraDirection[0] += 1*(direction_x - mCameraDirection[0]);
  }
 
 void Perspective::setCameraDirectionY(float direction_y) {
-  mCameraDirection[1] += 0.75*(direction_y - mCameraDirection[1]);
+  mCameraDirection[1] += 1*(direction_y - mCameraDirection[1]);
 }

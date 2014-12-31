@@ -34,10 +34,11 @@ class ofApp : public ofBaseApp{
 		double mElapsedTime;
 		Perspective* p;
 		Perspective* q;
+		Perspective* r;
 		float mZoom;
 		bool mDebug;
 		bool mFPS;
-		float pAlpha, qAlpha;
+		float pAlpha, qAlpha, rAlpha;
 };
 
 #endif

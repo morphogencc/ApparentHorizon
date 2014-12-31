@@ -9,10 +9,13 @@ void ofApp::setup(){
 
   p = new Perspective(0, 90);
   q = new Perspective(-90, 0);
-  pAlpha = 1;
+  r = new Perspective(-45, 45);
+  pAlpha = 0;
   qAlpha = 0;
+  rAlpha = 1;
   p->setAlpha(pAlpha);
   q->setAlpha(qAlpha);
+  r->setAlpha(rAlpha);
 
   mFPS = true;
 }
@@ -23,6 +26,7 @@ void ofApp::update() {
 
   p->update(mElapsedTime);
   q->update(mElapsedTime);
+  r->update(mElapsedTime);
 
   while(receiver.hasWaitingMessages()) {
     int pitch, velocity;
@@ -34,6 +38,7 @@ void ofApp::update() {
       if(m.getNumArgs() == 0) {
 	p->addRect();
 	q->addRect();
+	r->addRect();
       }
       else {  
 	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
@@ -46,12 +51,14 @@ void ofApp::update() {
 	}
 	p->addRect(pitch, velocity);
 	q->addRect(pitch, velocity);
+	r->addRect(pitch, velocity);
       }
     }    
     else if(m.getAddress() == "/create/triangle") {
       if(m.getNumArgs() == 0) {
 	p->addTriangle();
 	q->addTriangle();
+	r->addTriangle();
       }
       else {
 	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
@@ -64,12 +71,14 @@ void ofApp::update() {
 	}
 	p->addTriangle(pitch, velocity);
 	q->addTriangle(pitch, velocity);
+	r->addTriangle(pitch, velocity);
       }
     }
     else if(m.getAddress() == "/create/righttriangle") {
       if(m.getNumArgs() == 0) { 
 	p->addRightTriangle();
 	q->addRightTriangle();
+	r->addRightTriangle();
       }
       else {
 	if(m.getArgType(0) == OFXOSC_TYPE_INT32) { 
@@ -82,6 +91,7 @@ void ofApp::update() {
 	}
 	p->addRightTriangle(pitch, velocity);
 	q->addRightTriangle(pitch, velocity);
+	r->addRightTriangle(pitch, velocity);
       }
     }
     
@@ -93,6 +103,7 @@ void ofApp::update() {
 	}
 	p->setCameraSpeed(speed);
 	q->setCameraSpeed(speed);
+	r->setCameraSpeed(speed);
       }
     }
     else if(m.getAddress() == "/camera/heading/x") {
@@ -100,12 +111,15 @@ void ofApp::update() {
       int heading = m.getArgAsInt32(0);
       p->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
       q->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
+	  r->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
     }
     else if(m.getAddress() == "/camera/heading/y") {
       //change y heading
       int heading = m.getArgAsInt32(0);
       p->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
       q->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
+	  r->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
+
     }
     else if(m.getAddress() == "/shape/speed") {
       if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
@@ -115,6 +129,7 @@ void ofApp::update() {
 	}
 	p->setShapeSpeed(speed);
 	q->setShapeSpeed(speed);
+	r->setShapeSpeed(speed);
       }
     }
     else if(m.getAddress() == "/shape/rotationspeed") {
@@ -125,6 +140,7 @@ void ofApp::update() {
 	}
 	p->setShapeRotationSpeed(speed);
 	q->setShapeRotationSpeed(speed);
+	r->setShapeRotationSpeed(speed);
       }
     }
     else if(m.getAddress() == "/color/saturation") {
@@ -132,9 +148,11 @@ void ofApp::update() {
 	float saturation = ofMap(m.getArgAsInt32(0), 0, 127, 0, 255);
 	p->setShapeSaturation(saturation);
 	q->setShapeSaturation(saturation);
+	r->setShapeSaturation(saturation);
       }
     }
-    else if(m.getAddress() == "/perspective/left/alpha") {
+
+    else if(m.getAddress() == "/perspective/p/alpha") {
       if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
 	float alpha = ofMap(m.getArgAsInt32(0), 0, 127, 0, 1.0);
 	if(alpha < 0.02) {
@@ -144,9 +162,11 @@ void ofApp::update() {
 	  alpha = 1.0;
 	}
 	p->setAlpha(alpha);
+	ofLog() << "Changing p alpha " << alpha;
       }
     }
-    else if(m.getAddress() == "/perspective/right/alpha") {
+
+    else if(m.getAddress() == "/perspective/q/alpha") {
       if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
 	float alpha = ofMap(m.getArgAsInt32(0), 0, 127, 0, 1.0);
 	if(alpha < 0.02) {
@@ -156,6 +176,21 @@ void ofApp::update() {
 	  alpha = 1.0;
 	}
 	q->setAlpha(alpha);
+	ofLog() << "Changing q alpha " << alpha;
+      }
+    }
+
+	else if(m.getAddress() == "/perspective/r/alpha") {
+      if(m.getArgType(0) == OFXOSC_TYPE_INT32) {
+	float alpha = ofMap(m.getArgAsInt32(0), 0, 127, 0, 1.0);
+	if(alpha < 0.02) {
+	  alpha = 0;
+	}
+	if(alpha > 0.98) {
+	  alpha = 1.0;
+	}
+	r->setAlpha(alpha);
+	ofLog() << "Changing r alpha " << alpha;
       }
     }
   }
@@ -172,6 +207,9 @@ void ofApp::draw(){
   if(q->getAlpha() > 0) {
     q->draw();    
   }
+  if(r->getAlpha() > 0) {
+    r->draw();    
+  }
   ofDisableAlphaBlending();
   
   if(mFPS) {
@@ -185,15 +223,19 @@ void ofApp::keyPressed(int key){
   if(key == ' ') {
     p->reset();
     q->reset();
+	r->reset();
   }
   if(key == 't') {
     p->addTriangle();
     q->addTriangle();
+	r->addTriangle();
+
   }
   if(key == 'r') {
     p->addRect();
     q->addRect();
-  }
+	r->addRect();
+}
   if(key == 's') {
     ofSaveFrame();
   }
@@ -217,8 +259,8 @@ void ofApp::mouseMoved(int x, int y ){
   ofVec2f heading = ofVec2f((_mx / _w) - 0.5, 
 			    ((_h - _my) / _h) - 0.5);
 
-  p->setCameraDirectionX(heading[0]);
-  p->setCameraDirectionY(heading[1]);
+  //p->setCameraDirectionX(heading[0]);
+  //p->setCameraDirectionY(heading[1]);
 }
 
 //--------------------------------------------------------------

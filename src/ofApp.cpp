@@ -123,8 +123,8 @@ void ofApp::update() {
 	if(m.getArgAsInt32(0) >= 63 && m.getArgAsInt32(0) <= 65) {
 	  speed = 0;
 	}
-	p->setShapeSpeed(speed);
-	q->setShapeSpeed(speed);
+	p->setShapeRotationSpeed(speed);
+	q->setShapeRotationSpeed(speed);
       }
     }
     else if(m.getAddress() == "/color/saturation") {

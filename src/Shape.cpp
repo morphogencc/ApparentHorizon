@@ -10,7 +10,7 @@ Shape::Shape(ofVec3f position, float horizon) {
   mDepth = 1.0;
   mWidth = 1.0;
   mHeight = 1.0;
-  mTimeToHorizon = 10.0;
+  mTimeToHorizon = 15.0;
   mSpeed = -0.25;
   mRotationSpeed = 0.0;
   mHue = 0;

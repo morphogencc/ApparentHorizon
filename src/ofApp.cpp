@@ -162,7 +162,6 @@ void ofApp::update() {
 	  alpha = 1.0;
 	}
 	p->setAlpha(alpha);
-	ofLog() << "Changing p alpha " << alpha;
       }
     }
 
@@ -176,7 +175,6 @@ void ofApp::update() {
 	  alpha = 1.0;
 	}
 	q->setAlpha(alpha);
-	ofLog() << "Changing q alpha " << alpha;
       }
     }
 
@@ -190,7 +188,6 @@ void ofApp::update() {
 	  alpha = 1.0;
 	}
 	r->setAlpha(alpha);
-	ofLog() << "Changing r alpha " << alpha;
       }
     }
   }

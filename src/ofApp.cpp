@@ -109,16 +109,16 @@ void ofApp::update() {
     else if(m.getAddress() == "/camera/heading/x") {
      //change x heading
       int heading = m.getArgAsInt32(0);
-      p->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
-      q->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
-	  r->setCameraDirectionX(ofMap(heading, 0, 127, -0.5, 0.5));
+      p->setCameraDirectionX(ofMap(heading, 0, 127, -.75, .75));
+      q->setCameraDirectionX(ofMap(heading, 0, 127, -.75, .75));
+	  r->setCameraDirectionX(ofMap(heading, 0, 127, -.75, .75));
     }
     else if(m.getAddress() == "/camera/heading/y") {
       //change y heading
       int heading = m.getArgAsInt32(0);
-      p->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
-      q->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
-	  r->setCameraDirectionY(ofMap(heading, 0, 127, -0.5, 0.5));
+      p->setCameraDirectionY(ofMap(heading, 0, 127, -.75, .75));
+      q->setCameraDirectionY(ofMap(heading, 0, 127, -.75, .75));
+	  r->setCameraDirectionY(ofMap(heading, 0, 127, -.75, .75));
 
     }
     else if(m.getAddress() == "/shape/speed") {
